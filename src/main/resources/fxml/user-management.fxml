@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.PlaceholderContentController">
+   <children>
+      <!-- Coming Soon Notice -->
+      <HBox alignment="CENTER_LEFT" spacing="12.0" style="-fx-background-color: #FEF3C7; -fx-padding: 16px; -fx-background-radius: 12px;">
+         <children>
+            <Label text="⚠️" style="-fx-font-size: 24px;" />
+            <VBox spacing="4.0">
+               <children>
+                  <Label text="Feature Under Development" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #92400E;" />
+                  <Label text="User management functionality is currently being implemented. This feature will be available in the next update." wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: #92400E;" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      
+      <!-- Header -->
+      <HBox alignment="CENTER_LEFT" spacing="20.0">
+         <children>
+            <Label styleClass="card-title" text="User Management">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <TextField fx:id="userSearchField" promptText="Search users..." styleClass="input-field" prefWidth="200.0" disable="true" />
+            <ComboBox fx:id="roleFilterCombo" promptText="All Roles" styleClass="combo-box" prefWidth="150.0" disable="true" />
+            <Button fx:id="addUserBtn" mnemonicParsing="false" styleClass="primary-button" text="+ Add User" disable="true" />
+            <Button fx:id="refreshUsersBtn" mnemonicParsing="false" styleClass="secondary-button" text="🔄 Refresh" disable="true" />
+         </children>
+      </HBox>
+      
+      <!-- Statistics Cards -->
+      <HBox spacing="15.0">
+         <children>
+            <VBox alignment="CENTER" spacing="5.0" styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="totalUsersCount" styleClass="card-title" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="card-content" text="Total Users" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0" styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="activeUsersCount" styleClass="card-title" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="card-content" text="Active Users" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0" styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="volunteersCount" styleClass="card-title" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="card-content" text="Volunteers" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0" styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="requestersCount" styleClass="card-title" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="card-content" text="Requesters" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      
+      <!-- Users Table -->
+      <TableView fx:id="usersTable" styleClass="table-view" VBox.vgrow="ALWAYS">
+         <columns>
+            <TableColumn fx:id="userIdCol" prefWidth="100.0" text="User ID" />
+            <TableColumn fx:id="usernameCol" prefWidth="120.0" text="Username" />
+            <TableColumn fx:id="displayNameCol" prefWidth="150.0" text="Display Name" />
+            <TableColumn fx:id="emailCol" prefWidth="180.0" text="Email" />
+            <TableColumn fx:id="roleCol" prefWidth="100.0" text="Role" />
+            <TableColumn fx:id="statusCol" prefWidth="80.0" text="Status" />
+            <TableColumn fx:id="createdAtCol" prefWidth="120.0" text="Created" />
+            <TableColumn fx:id="actionsCol" prefWidth="150.0" text="Actions" />
+         </columns>
+      </TableView>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

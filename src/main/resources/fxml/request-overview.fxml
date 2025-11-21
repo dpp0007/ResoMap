@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="24.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.RequestOverviewController" style="-fx-background-color: #F8FAFB;">
+   <children>
+      <!-- Header Section -->
+      <VBox spacing="16.0" style="-fx-background-color: white; -fx-padding: 32px; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="16.0">
+               <children>
+                  <Label text="📋" style="-fx-font-size: 32px;" />
+                  <Label text="My Requests" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0D253F;">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="createRequestBtn" text="✨ Create New Request" styleClass="cta-button" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 14px 28px;" onAction="#handleCreateNewRequest" />
+               </children>
+            </HBox>
+            <Label text="Track and manage all your resource requests in one place." style="-fx-font-size: 16px; -fx-text-fill: #64748B;" />
+            
+            <!-- Filter Bar -->
+            <HBox spacing="16.0" alignment="CENTER_LEFT">
+               <children>
+                  <ComboBox fx:id="statusFilter" promptText="All Status" styleClass="modern-combobox" style="-fx-pref-width: 180px;" />
+                  <ComboBox fx:id="urgencyFilter" promptText="All Urgency" styleClass="modern-combobox" style="-fx-pref-width: 180px;" />
+                  <Button fx:id="refreshBtn" text="🔄 Refresh" styleClass="secondary-button" onAction="#handleRefresh" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      
+      <!-- Statistics Cards -->
+      <HBox spacing="24.0">
+         <children>
+            <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 16px; -fx-padding: 24px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="totalRequestsLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #3B82F6;">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <Label text="Total Requests" style="-fx-font-size: 14px; -fx-text-fill: #64748B; -fx-font-weight: 600;" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 16px; -fx-padding: 24px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="pendingRequestsLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #F59E0B;">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <Label text="Pending" style="-fx-font-size: 14px; -fx-text-fill: #64748B; -fx-font-weight: 600;" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 16px; -fx-padding: 24px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="assignedRequestsLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #8B5CF6;">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <Label text="Assigned" style="-fx-font-size: 14px; -fx-text-fill: #64748B; -fx-font-weight: 600;" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 16px; -fx-padding: 24px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="completedRequestsLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #10B981;">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <Label text="Completed" style="-fx-font-size: 14px; -fx-text-fill: #64748B; -fx-font-weight: 600;" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      
+      <!-- Requests Table -->
+      <VBox spacing="16.0" style="-fx-background-color: white; -fx-background-radius: 16px; -fx-padding: 32px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
+         <children>
+            <Label text="Request History" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D253F;">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            
+            <TableView fx:id="requestsTable" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="requestIdCol" prefWidth="120.0" text="Request ID" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="requesterCol" prefWidth="150.0" text="Requester" />
+                  <TableColumn fx:id="resourceCol" prefWidth="180.0" text="Resource" />
+                  <TableColumn fx:id="descriptionCol" prefWidth="250.0" text="Description" />
+                  <TableColumn fx:id="urgencyCol" prefWidth="120.0" text="Urgency" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="statusCol" prefWidth="140.0" text="Status" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="volunteerCol" prefWidth="150.0" text="Volunteer" />
+                  <TableColumn fx:id="createdCol" prefWidth="140.0" text="Created" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="actionsCol" prefWidth="120.0" text="Actions" style="-fx-alignment: CENTER;" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="32.0" left="32.0" right="32.0" top="32.0" />
+   </padding>
+</VBox>

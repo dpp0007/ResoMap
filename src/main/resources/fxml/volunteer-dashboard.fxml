@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.VolunteerDashboardController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header">
+         <children>
+            <Label text="🤝" style="-fx-font-size: 24px;" />
+            <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="welcomeLabel" text="Welcome, Volunteer" styleClass="heading-3">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label text="Help make a difference in your community" styleClass="text-secondary" style="-fx-font-size: 13px;" />
+               </children>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="secondary-button" text="Logout" />
+         </children>
+      </HBox>
+   </top>
+   
+   <left>
+      <VBox prefWidth="240.0" styleClass="sidebar">
+         <children>
+            <Button fx:id="dashboardBtn" mnemonicParsing="false" onAction="#showDashboard" styleClass="sidebar-button" text="🏠 Dashboard" />
+            <Button fx:id="availableRequestsBtn" mnemonicParsing="false" onAction="#showAvailableRequests" styleClass="sidebar-button" text="📋 Available Requests" />
+            <Button fx:id="myRequestsBtn" mnemonicParsing="false" onAction="#showMyRequests" styleClass="sidebar-button" text="📝 My Assignments" />
+            <Button fx:id="resourcesBtn" mnemonicParsing="false" onAction="#showResources" styleClass="sidebar-button" text="📦 Resources" />
+            <Button fx:id="profileBtn" mnemonicParsing="false" onAction="#showProfile" styleClass="sidebar-button" text="👤 Profile" />
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;">
+         <content>
+            <StackPane fx:id="contentArea">
+               <children>
+                  
+                  <!-- Dashboard View -->
+                  <VBox fx:id="dashboardView" spacing="32.0" visible="true">
+                     <children>
+                        <!-- Welcome Section -->
+                        <VBox spacing="8.0">
+                           <children>
+                              <Label text="Volunteer Dashboard" styleClass="heading-2">
+                                 <font>
+                                    <Font name="System Bold" size="28.0" />
+                                 </font>
+                              </Label>
+                              <Label text="View available requests and manage your volunteer assignments" styleClass="text-secondary">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Stats Cards -->
+                        <GridPane hgap="20.0" vgap="20.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <children>
+                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card">
+                                 <children>
+                                    <Label text="📋" style="-fx-font-size: 32px;" />
+                                    <Label fx:id="availableRequestsLabel" styleClass="stat-number" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="36.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="Available Requests" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label text="📝" style="-fx-font-size: 32px;" />
+                                    <Label fx:id="myAssignmentsLabel" styleClass="stat-number" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="36.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="My Assignments" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label text="✅" style="-fx-font-size: 32px;" />
+                                    <Label fx:id="completedRequestsLabel" styleClass="stat-number" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="36.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="Completed" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                        
+                        <!-- Action Buttons -->
+                        <HBox alignment="CENTER" spacing="16.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#showAvailableRequests" styleClass="primary-button" text="View Available Requests" />
+                              <Button mnemonicParsing="false" onAction="#showMyRequests" styleClass="primary-button" text="My Assignments" />
+                              <Button mnemonicParsing="false" onAction="#refreshData" styleClass="secondary-button" text="🔄 Refresh" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="32.0" left="32.0" right="32.0" top="32.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- Available Requests View -->
+                  <VBox fx:id="availableRequestsView" spacing="20.0" visible="false">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <Label styleClass="heading-3" text="Available Requests">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Region HBox.hgrow="ALWAYS" />
+                              <ComboBox fx:id="urgencyFilter" promptText="All Urgency" styleClass="combo-box" prefWidth="150.0" />
+                              <Button fx:id="refreshAvailableBtn" mnemonicParsing="false" onAction="#refreshAvailableRequests" styleClass="secondary-button" text="🔄 Refresh" />
+                           </children>
+                        </HBox>
+                        
+                        <TableView fx:id="availableRequestsTable" prefHeight="450.0" styleClass="table-view">
+                           <columns>
+                              <TableColumn fx:id="availableIdCol" prefWidth="80.0" text="ID" />
+                              <TableColumn fx:id="availableResourceCol" prefWidth="150.0" text="Resource" />
+                              <TableColumn fx:id="availableRequesterCol" prefWidth="120.0" text="Requester" />
+                              <TableColumn fx:id="availableUrgencyCol" prefWidth="100.0" text="Urgency" />
+                              <TableColumn fx:id="availableDescriptionCol" prefWidth="200.0" text="Description" />
+                              <TableColumn fx:id="availableDateCol" prefWidth="100.0" text="Date" />
+                              <TableColumn fx:id="availableActionCol" prefWidth="100.0" text="Action" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- My Requests View -->
+                  <VBox fx:id="myRequestsView" spacing="20.0" visible="false">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                           <children>
+                              <Label styleClass="heading-3" text="My Assignments">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Region HBox.hgrow="ALWAYS" />
+                              <ComboBox fx:id="statusFilter" promptText="All Status" styleClass="combo-box" prefWidth="150.0" />
+                              <Button fx:id="refreshMyRequestsBtn" mnemonicParsing="false" onAction="#refreshMyRequests" styleClass="secondary-button" text="🔄 Refresh" />
+                           </children>
+                        </HBox>
+                        
+                        <TableView fx:id="myRequestsTable" prefHeight="450.0" styleClass="table-view">
+                           <columns>
+                              <TableColumn fx:id="myIdCol" prefWidth="80.0" text="ID" />
+                              <TableColumn fx:id="myResourceCol" prefWidth="150.0" text="Resource" />
+                              <TableColumn fx:id="myRequesterCol" prefWidth="120.0" text="Requester" />
+                              <TableColumn fx:id="myStatusCol" prefWidth="120.0" text="Status" />
+                              <TableColumn fx:id="myUrgencyCol" prefWidth="100.0" text="Urgency" />
+                              <TableColumn fx:id="myDateCol" prefWidth="100.0" text="Assigned" />
+                              <TableColumn fx:id="myActionCol" prefWidth="120.0" text="Action" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- Resources View -->
+                  <VBox fx:id="resourcesView" spacing="20.0" visible="false">
+                     <children>
+                        <Label styleClass="heading-3" text="Community Resources">
+                           <font>
+                              <Font name="System Bold" size="22.0" />
+                           </font>
+                        </Label>
+                        
+                        <VBox spacing="16.0" styleClass="card">
+                           <children>
+                              <Label styleClass="card-title" text="Resource Information">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="card-content" text="View available community resources to help with your volunteer assignments." wrapText="true" />
+                              <Label styleClass="card-content" text="Resource details and availability will be displayed here." wrapText="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- Profile View -->
+                  <VBox fx:id="profileView" spacing="20.0" visible="false">
+                     <children>
+                        <Label styleClass="heading-3" text="Volunteer Profile">
+                           <font>
+                              <Font name="System Bold" size="22.0" />
+                           </font>
+                        </Label>
+                        
+                        <VBox spacing="20.0" styleClass="card">
+                           <children>
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label text="Username" style="-fx-font-weight: 600; -fx-font-size: 13px;" />
+                                    <TextField fx:id="profileUsernameField" editable="false" styleClass="input-field" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label text="Email" style="-fx-font-weight: 600; -fx-font-size: 13px;" />
+                                    <TextField fx:id="profileEmailField" styleClass="input-field" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label text="Role" style="-fx-font-weight: 600; -fx-font-size: 13px;" />
+                                    <TextField fx:id="profileRoleField" editable="false" styleClass="input-field" />
+                                 </children>
+                              </VBox>
+                              
+                              <HBox spacing="12.0">
+                                 <children>
+                                    <Button fx:id="updateProfileBtn" mnemonicParsing="false" onAction="#updateProfile" styleClass="primary-button" text="Update Profile" />
+                                    <Button mnemonicParsing="false" onAction="#changePassword" styleClass="secondary-button" text="Change Password" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                  </VBox>
+                  
+               </children>
+            </StackPane>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

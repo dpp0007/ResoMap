@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.ResourceManagementController" spacing="20.0">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="20.0">
+         <children>
+            <Label styleClass="card-title" text="Resource Management">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="addResourceButton" mnemonicParsing="false" onAction="#handleAddResource" styleClass="primary-button" text="Add Resource" />
+            <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefresh" styleClass="secondary-button" text="Refresh" />
+         </children>
+      </HBox>
+      
+      <HBox spacing="15.0">
+         <children>
+            <TextField fx:id="searchField" prefWidth="300.0" promptText="Search resources..." styleClass="input-field" />
+            <ComboBox fx:id="categoryFilter" prefWidth="150.0" promptText="All Categories" styleClass="input-field" />
+            <CheckBox fx:id="availableOnlyFilter" mnemonicParsing="false" text="Available Only" />
+         </children>
+      </HBox>
+      
+      <TableView fx:id="resourceTable" prefHeight="400.0" styleClass="table-view">
+         <columns>
+            <TableColumn fx:id="nameColumn" prefWidth="150.0" text="Name">
+               <cellValueFactory>
+                  <PropertyValueFactory property="name" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="categoryColumn" prefWidth="100.0" text="Category">
+               <cellValueFactory>
+                  <PropertyValueFactory property="category" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Description">
+               <cellValueFactory>
+                  <PropertyValueFactory property="description" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="quantityColumn" prefWidth="80.0" text="Quantity">
+               <cellValueFactory>
+                  <PropertyValueFactory property="quantity" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="locationColumn" prefWidth="150.0" text="Location">
+               <cellValueFactory>
+                  <PropertyValueFactory property="location" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="statusColumn" prefWidth="100.0" text="Status">
+               <cellValueFactory>
+                  <PropertyValueFactory property="availabilityStatus" />
+               </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="actionsColumn" prefWidth="120.0" text="Actions" />
+         </columns>
+      </TableView>
+      
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label fx:id="statusLabel" text="Ready" />
+            <Region HBox.hgrow="ALWAYS" />
+            <ProgressIndicator fx:id="loadingIndicator" visible="false" />
+            <Label fx:id="recordCountLabel" text="0 resources" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.communityhub.ui.controllers.NewRequestController"
+      styleClass="modal-dialog" spacing="0"
+      style="-fx-background-color: white; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 30, 0, 0, 10); -fx-max-width: 1100px; -fx-pref-width: 1100px;">
+   
+   <!-- HEADER -->
+   <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 32px 40px 24px 40px; -fx-background-color: #F8FAFB; -fx-background-radius: 20px 20px 0 0;">
+      <children>
+         <!-- Logo Icon -->
+         <Label text="🌐" style="-fx-font-size: 28px;" />
+         
+         <!-- Title -->
+         <Label text="Community Resource Hub" styleClass="heading-4" style="-fx-font-size: 16px; -fx-text-fill: #64748B;">
+            <font>
+               <Font name="System Bold" size="16.0" />
+            </font>
+         </Label>
+         
+         <Region HBox.hgrow="ALWAYS" />
+         
+         <!-- Close Button -->
+         <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleBack"
+                 text="✕" styleClass="icon-button"
+                 style="-fx-font-size: 20px; -fx-padding: 8px 14px; -fx-background-color: transparent; -fx-text-fill: #94A3B8; -fx-background-radius: 8px; -fx-cursor: hand;">
+         </Button>
+      </children>
+   </HBox>
+   
+   <!-- MAIN CONTENT -->
+   <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
+               style="-fx-background-color: transparent; -fx-background: transparent;">
+      <content>
+         <HBox spacing="40" style="-fx-padding: 32px 40px 40px 40px;" alignment="TOP_LEFT">
+            <children>
+               
+               <!-- LEFT SIDE: MAIN FORM -->
+               <VBox spacing="28" HBox.hgrow="ALWAYS" style="-fx-max-width: 640px;">
+                  <children>
+                     
+                     <!-- Page Title -->
+                     <Label text="Create a New Request" styleClass="heading-1" style="-fx-font-size: 32px; -fx-text-fill: #0D253F;">
+                        <font>
+                           <Font name="System Bold" size="32.0" />
+                        </font>
+                     </Label>
+                     
+                     <!-- Resource Category -->
+                     <VBox spacing="12">
+                        <children>
+                           <Label text="Resource Category" styleClass="heading-4" style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-font-weight: 600;">
+                              <font>
+                                 <Font name="System Bold" size="14.0" />
+                              </font>
+                           </Label>
+                           <ComboBox fx:id="resourceComboBox" promptText="Select a resource" 
+                                     styleClass="input-field" prefWidth="Infinity" maxWidth="Infinity"
+                                     style="-fx-font-size: 15px; -fx-padding: 14px 18px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-background-color: #F8FAFB; -fx-border-color: #E2E8F0; -fx-border-width: 1.5px;" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Description -->
+                     <VBox spacing="12">
+                        <children>
+                           <Label text="Description" styleClass="heading-4" style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-font-weight: 600;">
+                              <font>
+                                 <Font name="System Bold" size="14.0" />
+                              </font>
+                           </Label>
+                           <TextArea fx:id="descriptionTextArea" 
+                                     promptText="Please provide details like dietary restrictions, specific items, location details, etc."
+                                     styleClass="text-area" prefRowCount="5" wrapText="true"
+                                     style="-fx-font-size: 14px; -fx-padding: 14px 18px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-background-color: #F8FAFB; -fx-border-color: #E2E8F0; -fx-border-width: 1.5px;" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Urgency Level -->
+                     <VBox spacing="12">
+                        <children>
+                           <Label text="Urgency Level" styleClass="heading-4" style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-font-weight: 600;">
+                              <font>
+                                 <Font name="System Bold" size="14.0" />
+                              </font>
+                           </Label>
+                           
+                           <!-- Pill Buttons for Urgency -->
+                           <HBox spacing="12" fx:id="urgencyButtonGroup">
+                              <children>
+                                 <ToggleButton fx:id="urgencyLowBtn" text="Low" 
+                                               styleClass="urgency-toggle"
+                                               style="-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-border-color: #E2E8F0; -fx-border-width: 2px; -fx-border-radius: 25px;">
+                                    <toggleGroup>
+                                       <ToggleGroup fx:id="urgencyGroup" />
+                                    </toggleGroup>
+                                 </ToggleButton>
+                                 
+                                 <ToggleButton fx:id="urgencyMediumBtn" text="Medium" 
+                                               toggleGroup="$urgencyGroup"
+                                               styleClass="urgency-toggle"
+                                               style="-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-border-color: #E2E8F0; -fx-border-width: 2px; -fx-border-radius: 25px;" />
+                                 
+                                 <ToggleButton fx:id="urgencyHighBtn" text="High" 
+                                               toggleGroup="$urgencyGroup"
+                                               styleClass="urgency-toggle"
+                                               style="-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-border-color: #E2E8F0; -fx-border-width: 2px; -fx-border-radius: 25px;" />
+                                 
+                                 <ToggleButton fx:id="urgencyCriticalBtn" text="Critical" 
+                                               toggleGroup="$urgencyGroup"
+                                               styleClass="urgency-toggle"
+                                               style="-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; -fx-font-weight: 600; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-border-color: #E2E8F0; -fx-border-width: 2px; -fx-border-radius: 25px;" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+
+                     <!-- Quantity -->
+                     <VBox spacing="12">
+                        <children>
+                           <Label text="Quantity" styleClass="heading-4" style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-font-weight: 600;">
+                              <font>
+                                 <Font name="System Bold" size="14.0" />
+                              </font>
+                           </Label>
+                           
+                           <!-- Modern Number Stepper -->
+                           <HBox spacing="0" alignment="CENTER_LEFT" style="-fx-background-color: #F8FAFB; -fx-background-radius: 12px; -fx-border-color: #E2E8F0; -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-pref-width: 200px; -fx-max-width: 200px;">
+                              <children>
+                                 <Button fx:id="decrementBtn" mnemonicParsing="false" onAction="#handleDecrement"
+                                         text="−" style="-fx-font-size: 20px; -fx-padding: 12px 20px; -fx-background-color: transparent; -fx-text-fill: #64748B; -fx-cursor: hand; -fx-background-radius: 12px 0 0 12px;" />
+                                 
+                                 <TextField fx:id="quantityField" text="1" alignment="CENTER" editable="false"
+                                            style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-width: 0; -fx-text-fill: #0D253F; -fx-pref-width: 80px;" HBox.hgrow="ALWAYS" />
+                                 
+                                 <Button fx:id="incrementBtn" mnemonicParsing="false" onAction="#handleIncrement"
+                                         text="+" style="-fx-font-size: 20px; -fx-padding: 12px 20px; -fx-background-color: transparent; -fx-text-fill: #64748B; -fx-cursor: hand; -fx-background-radius: 0 12px 12px 0;" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                     
+                     <!-- Action Buttons -->
+                     <VBox spacing="14" style="-fx-padding: 12px 0 0 0;">
+                        <children>
+                           <!-- Submit Button -->
+                           <Button fx:id="submitButton" mnemonicParsing="false" onAction="#handleSubmit"
+                                   text="Submit Request" styleClass="primary-button" maxWidth="Infinity"
+                                   style="-fx-font-size: 16px; -fx-padding: 16px; -fx-background-radius: 12px; -fx-background-color: #0096D6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                              <font>
+                                 <Font name="System Bold" size="16.0" />
+                              </font>
+                           </Button>
+                           
+                           <!-- Clear Button -->
+                           <Button fx:id="clearButton" mnemonicParsing="false" onAction="#handleClear"
+                                   text="Clear Form" styleClass="secondary-button" maxWidth="Infinity"
+                                   style="-fx-font-size: 15px; -fx-padding: 14px; -fx-background-radius: 12px; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-font-weight: 600; -fx-cursor: hand;" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Status Message -->
+                     <Label fx:id="statusLabel" text="" wrapText="true" 
+                            style="-fx-font-size: 13px; -fx-padding: 12px; -fx-background-radius: 10px;" 
+                            visible="false" managed="false" />
+                     
+                  </children>
+               </VBox>
+
+               <!-- RIGHT SIDE: HELPFUL TIPS -->
+               <VBox spacing="0" style="-fx-min-width: 320px; -fx-max-width: 320px; -fx-background-color: #E8F4F8; -fx-background-radius: 16px; -fx-padding: 28px;">
+                  <children>
+                     
+                     <!-- Tips Header -->
+                     <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 20px 0;">
+                        <children>
+                           <Label text="💡" style="-fx-font-size: 26px;" />
+                           <Label text="Helpful Tips" styleClass="heading-4" style="-fx-font-size: 18px; -fx-text-fill: #0D253F;">
+                              <font>
+                                 <Font name="System Bold" size="18.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
+                     
+                     <!-- Tips List -->
+                     <VBox spacing="16">
+                        <children>
+                           <!-- Tip 1 -->
+                           <HBox spacing="10" alignment="TOP_LEFT">
+                              <children>
+                                 <Label text="•" style="-fx-font-size: 16px; -fx-text-fill: #0096D6; -fx-font-weight: bold; -fx-padding: 2px 0 0 0;" />
+                                 <Label text="Be as specific as possible to help us understand your needs." wrapText="true" 
+                                        style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-line-spacing: 2px;" HBox.hgrow="ALWAYS" />
+                              </children>
+                           </HBox>
+                           
+                           <!-- Tip 2 -->
+                           <HBox spacing="10" alignment="TOP_LEFT">
+                              <children>
+                                 <Label text="•" style="-fx-font-size: 16px; -fx-text-fill: #0096D6; -fx-font-weight: bold; -fx-padding: 2px 0 0 0;" />
+                                 <Label text="Do not include sensitive personal information like bank details." wrapText="true" 
+                                        style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-line-spacing: 2px;" HBox.hgrow="ALWAYS" />
+                              </children>
+                           </HBox>
+                           
+                           <!-- Tip 3 -->
+                           <HBox spacing="10" alignment="TOP_LEFT">
+                              <children>
+                                 <Label text="•" style="-fx-font-size: 16px; -fx-text-fill: #0096D6; -fx-font-weight: bold; -fx-padding: 2px 0 0 0;" />
+                                 <Label text="Clearly state the quantity and any preferences (e.g., allergies)." wrapText="true" 
+                                        style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-line-spacing: 2px;" HBox.hgrow="ALWAYS" />
+                              </children>
+                           </HBox>
+                           
+                           <!-- Tip 4 -->
+                           <HBox spacing="10" alignment="TOP_LEFT">
+                              <children>
+                                 <Label text="•" style="-fx-font-size: 16px; -fx-text-fill: #0096D6; -fx-font-weight: bold; -fx-padding: 2px 0 0 0;" />
+                                 <Label text="Double-check your contact details before submitting." wrapText="true" 
+                                        style="-fx-font-size: 14px; -fx-text-fill: #475569; -fx-line-spacing: 2px;" HBox.hgrow="ALWAYS" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                     
+                  </children>
+               </VBox>
+               
+            </children>
+         </HBox>
+      </content>
+   </ScrollPane>
+   
+</VBox>

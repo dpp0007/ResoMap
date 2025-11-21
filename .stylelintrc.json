@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": [
+          "-fx-font-family",
+          "-fx-background-color",
+          "-fx-padding",
+          "-fx-font-size",
+          "-fx-font-weight",
+          "-fx-border-color",
+          "-fx-border-radius",
+          "-fx-border-width",
+          "-fx-cursor",
+          "-fx-min-width",
+          "-fx-min-height",
+          "-fx-text-fill",
+          "-fx-wrap-text",
+          "-fx-text-alignment",
+          "-fx-background-radius",
+          "-fx-effect"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/src/main/resources/**/*.css"],
+      "rules": {
+        "property-no-vendor-prefix": null
+      }
+    }
+  ]
+}

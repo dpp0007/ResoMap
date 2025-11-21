@@ -1,0 +1,103 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE Files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.metadata/
+.recommenders/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Application Logs
+logs/
+*.log
+*.log.*
+
+# Database Files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+community_hub.db*
+
+# Application Generated Files
+exports/
+backups/
+cache/
+temp/
+tmp/
+
+# JavaFX
+*.fxbuild
+
+# Runtime Files
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage Reports
+*.exec
+jacoco.xml
+
+# Test Results
+TEST-*.xml
+*-test-results.xml
+
+# Environment Files
+.env
+.env.local
+.env.production
+
+# Compiled Static Files
+/static/
+/public/build/
+
+# Miscellaneous
+*.tmp
+*.bak
+*.swp
+*.swo
+*~.nib
+local.properties
+
+# Package Files
+*.zip
+*.tar.gz
+*.rar
+
+# Documentation Build
+/docs/build/

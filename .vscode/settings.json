@@ -1,0 +1,26 @@
+{
+  "css.lint.vendorPrefix": "ignore",
+  "css.validate": false,
+  "files.associations": {
+    "*.css": "css"
+  },
+  "css.customData": [
+    {
+      "version": 1.1,
+      "properties": [
+        {
+          "name": "-fx-font-family",
+          "description": "JavaFX CSS property for font family"
+        },
+        {
+          "name": "-fx-background-color",
+          "description": "JavaFX CSS property for background color"
+        },
+        {
+          "name": "-fx-padding",
+          "description": "JavaFX CSS property for padding"
+        }
+      ]
+    }
+  ]
+}

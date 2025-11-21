@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.SystemSettingsController">
+   <children>
+      <!-- Header -->
+      <HBox alignment="CENTER_LEFT" spacing="20.0">
+         <children>
+            <Label styleClass="card-title" text="System Settings">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="saveSettingsBtn" mnemonicParsing="false" styleClass="primary-button" text="💾 Save Settings" />
+            <Button fx:id="resetSettingsBtn" mnemonicParsing="false" styleClass="secondary-button" text="🔄 Reset" />
+         </children>
+      </HBox>
+      
+      <!-- Settings Tabs -->
+      <TabPane VBox.vgrow="ALWAYS">
+         <tabs>
+            <!-- General Settings -->
+            <Tab text="General" closable="false">
+               <content>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Application Settings" />
+                                    <Separator />
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Application Name:" prefWidth="150.0" />
+                                          <TextField fx:id="appNameField" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Organization:" prefWidth="150.0" />
+                                          <TextField fx:id="organizationField" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Contact Email:" prefWidth="150.0" />
+                                          <TextField fx:id="contactEmailField" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Support Phone:" prefWidth="150.0" />
+                                          <TextField fx:id="supportPhoneField" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                              
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="System Preferences" />
+                                    <Separator />
+                                    <CheckBox fx:id="enableNotificationsCheck" text="Enable Email Notifications" />
+                                    <CheckBox fx:id="autoAssignCheck" text="Auto-assign Requests to Volunteers" />
+                                    <CheckBox fx:id="requireApprovalCheck" text="Require Admin Approval for New Users" />
+                                    <CheckBox fx:id="enableFeedbackCheck" text="Enable Feedback System" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+            
+            <!-- Request Settings -->
+            <Tab text="Requests" closable="false">
+               <content>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Request Management" />
+                                    <Separator />
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Max Requests per User:" prefWidth="200.0" />
+                                          <Spinner fx:id="maxRequestsSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Request Timeout (hours):" prefWidth="200.0" />
+                                          <Spinner fx:id="requestTimeoutSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Priority Levels:" prefWidth="200.0" />
+                                          <ComboBox fx:id="priorityLevelsCombo" styleClass="input-field" prefWidth="150.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                              
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Urgency Thresholds" />
+                                    <Separator />
+                                    <CheckBox fx:id="enableUrgencyAlertsCheck" text="Enable Urgency Alerts" />
+                                    <CheckBox fx:id="escalateCriticalCheck" text="Auto-escalate Critical Requests" />
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Critical Alert Time (hours):" prefWidth="200.0" />
+                                          <Spinner fx:id="criticalAlertSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+            
+            <!-- Database Settings -->
+            <Tab text="Database" closable="false">
+               <content>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Database Configuration" />
+                                    <Separator />
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Database Type:" prefWidth="150.0" />
+                                          <ComboBox fx:id="dbTypeCombo" styleClass="input-field" prefWidth="150.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Connection Pool Size:" prefWidth="150.0" />
+                                          <Spinner fx:id="poolSizeSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Backup Frequency:" prefWidth="150.0" />
+                                          <ComboBox fx:id="backupFrequencyCombo" styleClass="input-field" prefWidth="150.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                              
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Maintenance" />
+                                    <Separator />
+                                    <HBox spacing="10.0">
+                                       <children>
+                                          <Button fx:id="backupNowBtn" mnemonicParsing="false" styleClass="primary-button" text="Backup Now" />
+                                          <Button fx:id="optimizeDbBtn" mnemonicParsing="false" styleClass="secondary-button" text="Optimize Database" />
+                                          <Button fx:id="clearCacheBtn" mnemonicParsing="false" styleClass="secondary-button" text="Clear Cache" />
+                                       </children>
+                                    </HBox>
+                                    <Label fx:id="dbStatusLabel" text="Database Status: Connected" styleClass="card-content" />
+                                    <Label fx:id="lastBackupLabel" text="Last Backup: Never" styleClass="card-content" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+            
+            <!-- Security Settings -->
+            <Tab text="Security" closable="false">
+               <content>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Authentication Settings" />
+                                    <Separator />
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Min Password Length:" prefWidth="200.0" />
+                                          <Spinner fx:id="minPasswordLengthSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Label text="Session Timeout (minutes):" prefWidth="200.0" />
+                                          <Spinner fx:id="sessionTimeoutSpinner" styleClass="input-field" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
+                                    <CheckBox fx:id="requireStrongPasswordCheck" text="Require Strong Passwords" />
+                                    <CheckBox fx:id="enableTwoFactorCheck" text="Enable Two-Factor Authentication" />
+                                    <CheckBox fx:id="lockAccountCheck" text="Lock Account After Failed Attempts" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                              
+                              <VBox spacing="10.0" styleClass="card">
+                                 <children>
+                                    <Label styleClass="card-title" text="Data Privacy" />
+                                    <Separator />
+                                    <CheckBox fx:id="enableAuditLogCheck" text="Enable Audit Logging" />
+                                    <CheckBox fx:id="anonymizeFeedbackCheck" text="Anonymize Feedback by Default" />
+                                    <CheckBox fx:id="gdprComplianceCheck" text="GDPR Compliance Mode" />
+                                    <HBox spacing="10.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#handleViewAuditLog" styleClass="secondary-button" text="View Audit Log" />
+                                          <Button mnemonicParsing="false" onAction="#handleExportUserData" styleClass="secondary-button" text="Export User Data" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      
+      <!-- Status Message -->
+      <Label fx:id="settingsStatusLabel" styleClass="card-content" text="" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
