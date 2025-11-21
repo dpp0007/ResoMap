@@ -6,6 +6,7 @@
 [![JavaFX](https://img.shields.io/badge/JavaFX-17.0.2-blue.svg)](https://openjfx.io/)
 [![Maven](https://img.shields.io/badge/Maven-3.8+-red.svg)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-ResoMap-blue.svg)](https://github.com/dpp0007/ResoMap)
 
 ---
 
@@ -37,6 +38,12 @@ The **Community Resource Hub** is a desktop application designed to streamline t
 - 📊 **Track** requests and resource distribution
 - 🔒 **Secure** user data with role-based access control
 - 📈 **Analyze** system performance with comprehensive reports
+
+### 🎥 Try It Out
+
+1. Clone and run the application (see [Quick Start](#-quick-start))
+2. Use the test credentials below to explore different user roles
+3. Experience the full workflow from request creation to completion
 
 ---
 
@@ -213,6 +220,19 @@ The **Community Resource Hub** is a desktop application designed to streamline t
 
 ## 🚀 Getting Started
 
+### 🔥 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/dpp0007/ResoMap.git
+cd ResoMap
+
+# Build and run
+mvn clean javafx:run
+```
+
+> **Note**: The application will automatically create the database and sample data on first run.
+
 ### Prerequisites
 
 - **Java Development Kit (JDK)** 11 or higher
@@ -223,8 +243,8 @@ The **Community Resource Hub** is a desktop application designed to streamline t
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/community-resource-hub.git
-   cd community-resource-hub
+   git clone https://github.com/dpp0007/ResoMap.git
+   cd ResoMap
    ```
 
 2. **Build the project**
@@ -307,7 +327,7 @@ User-friendly interface for submitting requests and tracking status.
 ## 📁 Project Structure
 
 ```
-community-resource-hub/
+ResoMap/
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -525,9 +545,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-- **Project Maintainer**: Community Hub Team
-- **Email**: admin@communityhub.org
-- **Issue Tracker**: [GitHub Issues](https://github.com/yourusername/community-resource-hub/issues)
+- **Project Repository**: [ResoMap on GitHub](https://github.com/dpp0007/ResoMap)
+- **Project Owner**: [@dpp0007](https://github.com/dpp0007)
+- **Issue Tracker**: [GitHub Issues](https://github.com/dpp0007/ResoMap/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dpp0007/ResoMap/discussions)
 
 ---
 
@@ -544,24 +565,27 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Current Version**: 1.0.0  
 **Status**: ✅ Production Ready  
-**Last Updated**: November 2024
+**Last Updated**: November 2025  
+**Repository**: [dpp0007/ResoMap](https://github.com/dpp0007/ResoMap)
 
-### Recent Updates
+### ✨ Recent Updates
 
-- ✅ Complete admin panel with all management features
-- ✅ Enhanced volunteer dashboard with modern UI
-- ✅ System settings with database maintenance tools
-- ✅ Audit log viewer for security compliance
-- ✅ GDPR-compliant user data export (HTML/PDF, JSON, CSV, XML)
-- ✅ Comprehensive system reports with analytics
-- ✅ Real-time request tracking and status updates
+- ✅ **Clean Architecture**: Well-organized codebase with proper separation of concerns
+- ✅ **Code Quality**: Comprehensive linting cleanup and optimization
+- ✅ **Icon Consistency**: Fixed icon sizing issues for uniform UI display  
+- ✅ **Professional Documentation**: Complete README with setup instructions
+- ✅ **GitHub Ready**: Proper .gitignore and repository structure
+- ✅ **FXML Architecture**: Modern JavaFX UI with proper controller bindings
+- ✅ **Database Integration**: SQLite with comprehensive DAO pattern implementation
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for the Community**
+**Made with ❤️ for the Community by [@dpp0007](https://github.com/dpp0007)**
 
-[⬆ Back to Top](#-community-resource-hub)
+⭐ **Star this repository if you found it helpful!**
+
+[🔗 **View on GitHub**](https://github.com/dpp0007/ResoMap) | [⬆ Back to Top](#-community-resource-hub)
 
 </div>
