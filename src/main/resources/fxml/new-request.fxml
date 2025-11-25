@@ -17,7 +17,7 @@
          <Label text="🌐" style="-fx-font-size: 28px;" />
          
          <!-- Title -->
-         <Label text="Community Resource Hub" styleClass="heading-4" style="-fx-font-size: 16px; -fx-text-fill: #64748B;">
+         <Label text="ResoMap" styleClass="heading-4" style="-fx-font-size: 16px; -fx-text-fill: #64748B;">
             <font>
                <Font name="System Bold" size="16.0" />
             </font>
@@ -148,7 +148,7 @@
                      <VBox spacing="14" style="-fx-padding: 12px 0 0 0;">
                         <children>
                            <!-- Submit Button -->
-                           <Button fx:id="submitButton" mnemonicParsing="false" onAction="#handleSubmit"
+                           <Button fx:id="submitBtn" mnemonicParsing="false" onAction="#handleSubmit"
                                    text="Submit Request" styleClass="primary-button" maxWidth="Infinity"
                                    style="-fx-font-size: 16px; -fx-padding: 16px; -fx-background-radius: 12px; -fx-background-color: #0096D6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
                               <font>

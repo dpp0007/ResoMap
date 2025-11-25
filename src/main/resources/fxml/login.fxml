@@ -12,8 +12,8 @@
             <!-- Logo & Title -->
             <VBox alignment="CENTER" spacing="12.0">
                <children>
-                  <Label text="🌐" style="-fx-font-size: 48px;" />
-                  <Label text="Community Resource Hub" styleClass="heading-2">
+                  <Label text="◉" style="-fx-font-size: 56px; -fx-font-weight: bold; -fx-text-fill: #3B82F6;" />
+                  <Label text="ResoMap" styleClass="heading-2">
                      <font>
                         <Font name="System Bold" size="28.0" />
                      </font>

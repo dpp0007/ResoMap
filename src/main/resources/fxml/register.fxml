@@ -9,13 +9,15 @@
    <center>
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;">
          <content>
-            <VBox alignment="CENTER" maxWidth="520.0" spacing="28.0">
+            <HBox alignment="CENTER" style="-fx-min-height: 100%;">
+               <children>
+                  <VBox alignment="CENTER" maxWidth="520.0" spacing="28.0">
                <children>
                   <!-- Logo & Title -->
                   <VBox alignment="CENTER" spacing="12.0">
                      <children>
-                        <Label text="🌐" style="-fx-font-size: 48px;" />
-                        <Label text="Community Resource Hub" styleClass="heading-2">
+                        <Label text="◉" style="-fx-font-size: 56px; -fx-font-weight: bold; -fx-text-fill: #3B82F6;" />
+                        <Label text="ResoMap" styleClass="heading-2">
                            <font>
                               <Font name="System Bold" size="28.0" />
                            </font>
@@ -91,11 +93,13 @@
                   </VBox>
                   
                   <ProgressIndicator fx:id="loadingIndicator" visible="false" prefWidth="40.0" prefHeight="40.0" />
+                  </children>
+                     <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                     </padding>
+                  </VBox>
                </children>
-               <padding>
-                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-               </padding>
-            </VBox>
+            </HBox>
          </content>
       </ScrollPane>
    </center>

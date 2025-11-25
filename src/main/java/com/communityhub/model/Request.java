@@ -24,6 +24,10 @@ public class Request {
     private String notes;
     private int quantityRequested;
     
+    // Display properties (not persisted to database)
+    private transient String resourceName;
+    private transient String requesterName;
+    
     /**
      * Default constructor for Request
      */
@@ -216,6 +220,56 @@ public class Request {
     public void setQuantityRequested(int quantityRequested) {
         this.quantityRequested = Math.max(1, quantityRequested);
         updateTimestamp();
+    }
+    
+    // Display property getters and setters
+    
+    /**
+     * Gets the ID for display purposes (alias for requestId)
+     * @return Request ID
+     */
+    public String getId() {
+        return requestId;
+    }
+    
+    /**
+     * Gets the resource name for display
+     * @return Resource name
+     */
+    public String getResourceName() {
+        return resourceName;
+    }
+    
+    /**
+     * Sets the resource name for display
+     * @param resourceName Resource name
+     */
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+    
+    /**
+     * Gets the requester name for display
+     * @return Requester name
+     */
+    public String getRequesterName() {
+        return requesterName;
+    }
+    
+    /**
+     * Sets the requester name for display
+     * @param requesterName Requester name
+     */
+    public void setRequesterName(String requesterName) {
+        this.requesterName = requesterName;
+    }
+    
+    /**
+     * Gets the urgency for display (alias for urgencyLevel)
+     * @return Urgency level
+     */
+    public String getUrgency() {
+        return urgencyLevel != null ? urgencyLevel.getDisplayName() : "Unknown";
     }
     
     /**

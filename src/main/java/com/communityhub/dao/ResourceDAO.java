@@ -423,4 +423,5 @@ public class ResourceDAO extends BaseDAO<Resource> {
             }
         });
     }
+    
 }

@@ -1,13 +1,12 @@
 package com.communityhub.ui.controllers;
 
+import com.communityhub.core.BaseController;
+import com.communityhub.core.Constants;
+import com.communityhub.core.ErrorHandler;
 import com.communityhub.exception.AuthenticationException;
 import com.communityhub.exception.DatabaseException;
-import com.communityhub.exception.InvalidInputException;
 import com.communityhub.model.User;
-import com.communityhub.service.AuthenticationService;
-import com.communityhub.util.SessionManager;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,16 +19,22 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
- * Controller for the login screen
- * Demonstrates JavaFX controller pattern with background task execution
+ * Login Controller - Refactored
+ * Handles user authentication and navigation to appropriate dashboard
+ * 
+ * Improvements:
+ * - Extends BaseController for common functionality
+ * - Uses ErrorHandler for consistent error messages
+ * - Removed hardcoded test credentials (security improvement)
+ * - Uses Constants for paths and messages
+ * - Cleaner async handling with executeAsync
+ * 
+ * @author ResoMap Team
+ * @version 2.0
  */
-public class LoginController implements Initializable {
-    
-    private static final Logger logger = Logger.getLogger(LoginController.class.getName());
+public class LoginController extends BaseController implements Initializable {
     
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
@@ -38,17 +43,14 @@ public class LoginController implements Initializable {
     @FXML private Label errorLabel;
     @FXML private ProgressIndicator loadingIndicator;
     
-    private AuthenticationService authService;
-    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            authService = new AuthenticationService();
+            initializeServices();
             setupEventHandlers();
-            setupValidation();
+            logger.info("LoginController initialized successfully");
         } catch (DatabaseException e) {
-            logger.log(Level.SEVERE, "Failed to initialize authentication service", e);
-            showError("System initialization failed. Please restart the application.");
+            ErrorHandler.handleDatabaseError(e);
         }
     }
     
@@ -56,7 +58,7 @@ public class LoginController implements Initializable {
      * Sets up event handlers for the login form
      */
     private void setupEventHandlers() {
-        // Enter key handling
+        // Enter key navigation
         usernameField.setOnAction(e -> passwordField.requestFocus());
         passwordField.setOnAction(e -> handleLogin(null));
         
@@ -66,239 +68,249 @@ public class LoginController implements Initializable {
     }
     
     /**
-     * Sets up input validation
-     */
-    private void setupValidation() {
-        // We'll handle button state manually in setLoading method
-        // to avoid binding conflicts
-    }
-    
-    /**
      * Handles login button click
-     * @param event Action event
+     * 
+     * @param event Action event (can be null for programmatic calls)
      */
     @FXML
     private void handleLogin(ActionEvent event) {
-        System.out.println("=== LOGIN BUTTON CLICKED ===");
-        logger.info("Login button clicked!");
-        
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
         
-        System.out.println("Username: " + username);
-        System.out.println("Password length: " + password.length());
-        
-        if (username.isEmpty() || password.isEmpty()) {
-            showError("Please enter both username and password.");
+        // Validate input
+        if (!validateInput(username, password)) {
             return;
         }
         
-        // Show loading indicator
+        // Show loading state
         setLoading(true);
         clearError();
         
-        // Create background task for login
-        Task<User> loginTask = new Task<User>() {
+        // Perform login asynchronously
+        javafx.concurrent.Task<User> loginTask = new javafx.concurrent.Task<User>() {
             @Override
             protected User call() throws Exception {
-                try {
-                    // Direct database lookup for testing
-                    com.communityhub.dao.UserDAO userDAO = new com.communityhub.dao.UserDAO();
-                    User user = userDAO.findByUsername(username);
-                    
-                    if (user == null) {
-                        // Create a temporary user for testing if not found
-                        if (username.equals("user1") || username.equals("admin") || username.equals("volunteer1")) {
-                            if (username.equals("admin")) {
-                                user = new com.communityhub.model.Admin();
-                            } else if (username.equals("volunteer1")) {
-                                user = new com.communityhub.model.Volunteer();
-                            } else {
-                                user = new com.communityhub.model.Requester();
-                            }
-                            
-                            user.setUserId(java.util.UUID.randomUUID().toString());
-                            user.setUsername(username);
-                            user.setEmail(username + "@test.com");
-                            
-                            System.out.println("Created temporary user: " + username);
-                        } else {
-                            throw new AuthenticationException("User not found: " + username);
-                        }
-                    }
-                    
-                    // For testing, accept simple passwords
-                    boolean passwordValid = false;
-                    
-                    // Accept "test" for any user for easy testing
-                    if (password.equals("test")) {
-                        passwordValid = true;
-                    }
-                    // Accept original passwords
-                    else if (username.equals("admin") && password.equals("Admin123!")) {
-                        passwordValid = true;
-                    } else if (username.equals("volunteer1") && password.equals("Volunteer123!")) {
-                        passwordValid = true;
-                    } else if (username.equals("user1") && password.equals("User123!")) {
-                        passwordValid = true;
-                    }
-                    // Accept simple passwords for each user
-                    else if (username.equals("admin") && password.equals("admin")) {
-                        passwordValid = true;
-                    } else if (username.equals("volunteer1") && password.equals("volunteer")) {
-                        passwordValid = true;
-                    } else if (username.equals("user1") && password.equals("user")) {
-                        passwordValid = true;
-                    }
-                    
-                    if (!passwordValid) {
-                        throw new AuthenticationException("Invalid credentials. Try:\n" +
-                            "• user1 / test\n" +
-                            "• admin / test\n" +
-                            "• volunteer1 / test\n" +
-                            "Or use the original passwords.");
-                    }
-                    
-                    // Set session
-                    SessionManager.getInstance().login(user);
-                    
-                    return user;
-                    
-                } catch (Exception e) {
-                    System.err.println("Login error: " + e.getMessage());
-                    throw e;
-                }
-            }
-            
-            @Override
-            protected void succeeded() {
-                Platform.runLater(() -> {
-                    setLoading(false);
-                    User user = getValue();
-                    if (user != null) {
-                        System.out.println("Login successful for: " + user.getUsername());
-                        logger.info("Login successful for user: " + user.getUsername());
-                        navigateToDashboard(user);
-                    } else {
-                        showError("Login failed - no user returned.");
-                    }
-                });
-            }
-            
-            @Override
-            protected void failed() {
-                Platform.runLater(() -> {
-                    setLoading(false);
-                    Throwable exception = getException();
-                    
-                    System.err.println("Login failed: " + exception.getMessage());
-                    
-                    if (exception instanceof AuthenticationException) {
-                        showError(((AuthenticationException) exception).getUserMessage());
-                    } else {
-                        showError("Login failed: " + exception.getMessage());
-                    }
-                    
-                    // Clear password field on error
-                    passwordField.clear();
-                    passwordField.requestFocus();
-                });
+                return performLogin(username, password);
             }
         };
         
-        // Run login task in background thread
-        Thread loginThread = new Thread(loginTask);
-        loginThread.setDaemon(true);
-        loginThread.start();
+        executeAsync(loginTask, this::onLoginSuccess, this::onLoginFailure);
+    }
+    
+    /**
+     * Validates login input
+     * 
+     * @param username Username to validate
+     * @param password Password to validate
+     * @return true if input is valid
+     */
+    private boolean validateInput(String username, String password) {
+        if (username.isEmpty()) {
+            showErrorMessage("Please enter your username.");
+            usernameField.requestFocus();
+            return false;
+        }
+        
+        if (password.isEmpty()) {
+            showErrorMessage("Please enter your password.");
+            passwordField.requestFocus();
+            return false;
+        }
+        
+        // Note: We don't validate length here for login
+        // Length validation is only for registration
+        // This allows existing users with any password length to login
+        
+        return true;
+    }
+    
+    /**
+     * Performs login operation
+     * Runs in background thread
+     * 
+     * @param username Username
+     * @param password Password
+     * @return Authenticated user
+     * @throws Exception if login fails
+     */
+    private User performLogin(String username, String password) throws Exception {
+        logger.info("Attempting login for user: " + username);
+        
+        try {
+            // Use AuthenticationService for proper authentication
+            User user = authService.login(username, password);
+            
+            if (user == null) {
+                throw new AuthenticationException("Authentication failed");
+            }
+            
+            logger.info("Login successful for user: " + username + " (Role: " + user.getRole() + ")");
+            return user;
+            
+        } catch (AuthenticationException e) {
+            logger.warning("Authentication failed for user: " + username);
+            throw e;
+        } catch (Exception e) {
+            logger.severe("Unexpected error during login: " + e.getMessage());
+            throw new AuthenticationException("Login failed due to system error");
+        }
+    }
+    
+    /**
+     * Handles successful login
+     * Runs on JavaFX thread
+     * 
+     * @param user Authenticated user
+     */
+    private void onLoginSuccess(User user) {
+        setLoading(false);
+        
+        if (user != null) {
+            logger.info("Navigating to dashboard for user: " + user.getUsername());
+            navigateToDashboard(user);
+        } else {
+            showErrorMessage(Constants.Messages.LOGIN_FAILED);
+        }
+    }
+    
+    /**
+     * Handles login failure
+     * Runs on JavaFX thread
+     * 
+     * @param throwable Exception that occurred
+     */
+    private void onLoginFailure(Throwable throwable) {
+        setLoading(false);
+        
+        logger.warning("Login failed: " + throwable.getMessage());
+        
+        if (throwable instanceof AuthenticationException) {
+            showErrorMessage(throwable.getMessage());
+        } else {
+            showErrorMessage(Constants.Messages.LOGIN_FAILED);
+        }
+        
+        // Clear password field on error
+        passwordField.clear();
+        passwordField.requestFocus();
     }
     
     /**
      * Handles register link click
+     * 
      * @param event Action event
      */
     @FXML
     private void handleRegister(ActionEvent event) {
         try {
-            // Load registration screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML.REGISTER));
             Parent root = loader.load();
             
             Stage stage = (Stage) registerLink.getScene().getWindow();
             Scene scene = new Scene(root, 900, 800);
-            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource(Constants.CSS.MAIN_STYLESHEET).toExternalForm());
             
             stage.setScene(scene);
-            stage.setTitle("Community Resource Hub - Register");
+            stage.setTitle(Constants.APP_NAME + " - Register");
+            
+            logger.info("Navigated to registration screen");
             
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load registration screen", e);
-            showError("Failed to open registration screen.");
+            ErrorHandler.handleException(e, "Navigation");
         }
     }
     
     /**
      * Navigates to the appropriate dashboard based on user role
+     * 
      * @param user Logged in user
      */
     private void navigateToDashboard(User user) {
         try {
-            String fxmlPath;
-            String title;
-            
-            // Determine dashboard based on user role (polymorphism)
-            switch (user.getRole()) {
-                case ADMIN:
-                    fxmlPath = "/fxml/admin-dashboard.fxml";
-                    title = "Community Resource Hub - Admin Dashboard";
-                    break;
-                case VOLUNTEER:
-                    fxmlPath = "/fxml/volunteer-dashboard.fxml";
-                    title = "Community Resource Hub - Volunteer Dashboard";
-                    break;
-                case REQUESTER:
-                    fxmlPath = "/fxml/requester-dashboard.fxml";
-                    title = "Community Resource Hub - Dashboard";
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown user role: " + user.getRole());
-            }
+            String fxmlPath = getDashboardPath(user);
+            String title = getDashboardTitle(user);
             
             // Load dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             
-            // Pass user to dashboard controller if needed
+            // Pass user to dashboard controller
             Object controller = loader.getController();
             if (controller instanceof DashboardController) {
                 ((DashboardController) controller).setCurrentUser(user);
+            } else if (controller instanceof BaseController) {
+                ((BaseController) controller).setCurrentUser(user);
             }
             
+            // Setup and show stage
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            Scene scene = new Scene(root, 1200, 800);
-            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+            Scene scene = new Scene(root, Constants.Window.DASHBOARD_WIDTH, Constants.Window.DASHBOARD_HEIGHT);
+            scene.getStylesheets().add(getClass().getResource(Constants.CSS.MAIN_STYLESHEET).toExternalForm());
             
             stage.setScene(scene);
             stage.setTitle(title);
             stage.setMaximized(true);
             
+            logger.info("Successfully navigated to dashboard for role: " + user.getRole());
+            
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load dashboard", e);
-            showError("Failed to load dashboard. Please try logging in again.");
+            logger.severe("Failed to load dashboard: " + e.getMessage());
+            ErrorHandler.showError("Navigation Error", 
+                "Failed to load dashboard. Please try logging in again.");
             
             // Logout user on dashboard load failure
             try {
                 authService.logout();
             } catch (AuthenticationException ex) {
-                logger.log(Level.WARNING, "Failed to logout after dashboard load failure", ex);
+                logger.warning("Failed to logout after dashboard load failure");
             }
         }
     }
     
     /**
-     * Shows an error message
+     * Gets the dashboard FXML path for a user role
+     * 
+     * @param user User
+     * @return FXML path
+     */
+    private String getDashboardPath(User user) {
+        switch (user.getRole()) {
+            case ADMIN:
+                return Constants.FXML.ADMIN_DASHBOARD;
+            case VOLUNTEER:
+                return Constants.FXML.VOLUNTEER_DASHBOARD;
+            case REQUESTER:
+                return Constants.FXML.REQUESTER_DASHBOARD;
+            default:
+                throw new IllegalStateException("Unknown user role: " + user.getRole());
+        }
+    }
+    
+    /**
+     * Gets the dashboard title for a user role
+     * 
+     * @param user User
+     * @return Dashboard title
+     */
+    private String getDashboardTitle(User user) {
+        switch (user.getRole()) {
+            case ADMIN:
+                return Constants.APP_NAME + " - Admin Dashboard";
+            case VOLUNTEER:
+                return Constants.APP_NAME + " - Volunteer Dashboard";
+            case REQUESTER:
+                return Constants.APP_NAME + " - Dashboard";
+            default:
+                return Constants.APP_NAME + " - Dashboard";
+        }
+    }
+    
+    /**
+     * Shows an error message in the error label
+     * 
      * @param message Error message to display
      */
-    private void showError(String message) {
+    private void showErrorMessage(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
@@ -313,15 +325,16 @@ public class LoginController implements Initializable {
     
     /**
      * Sets loading state
+     * 
      * @param loading Whether loading is in progress
      */
     private void setLoading(boolean loading) {
-        loadingIndicator.setVisible(loading);
-        
-        // Only disable button if loading, not based on field content during loading
-        loginButton.setDisable(loading);
-        usernameField.setDisable(loading);
-        passwordField.setDisable(loading);
-        registerLink.setDisable(loading);
+        Platform.runLater(() -> {
+            loadingIndicator.setVisible(loading);
+            loginButton.setDisable(loading);
+            usernameField.setDisable(loading);
+            passwordField.setDisable(loading);
+            registerLink.setDisable(loading);
+        });
     }
 }

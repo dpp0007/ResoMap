@@ -114,7 +114,7 @@ public class SystemSettingsController implements Initializable {
     
     private void loadCurrentSettings() {
         // Load General Settings
-        if (appNameField != null) appNameField.setText("Community Resource Hub");
+        if (appNameField != null) appNameField.setText("ResoMap");
         if (organizationField != null) organizationField.setText("Community Services");
         if (contactEmailField != null) contactEmailField.setText("admin@communityhub.org");
         if (supportPhoneField != null) supportPhoneField.setText("+1-555-0100");
@@ -551,7 +551,7 @@ public class SystemSettingsController implements Initializable {
                 content.append("</style>\n</head>\n<body>\n");
                 
                 content.append("<div class=\"header\">\n");
-                content.append("<h1>COMMUNITY RESOURCE HUB</h1>\n");
+                content.append("<h1>RESOMAP</h1>\n");
                 content.append("<h2>User Data Export Report</h2>\n");
                 content.append("</div>\n");
                 

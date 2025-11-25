@@ -9,6 +9,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -59,12 +60,100 @@ public class NewRequestController implements Initializable {
             // Select Low urgency by default
             urgencyLowBtn.setSelected(true);
             
+            // Setup resource ComboBox to display only resource names
+            setupResourceComboBox();
+            
+            // Setup urgency button styling
+            setupUrgencyButtons();
+            
             // Load resources
             loadResources();
             
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to initialize new request dialog", e);
             showError("Failed to initialize: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Setup resource ComboBox to display only resource names
+     */
+    private void setupResourceComboBox() {
+        if (resourceComboBox != null) {
+            // Set custom cell factory for dropdown list
+            resourceComboBox.setCellFactory(param -> new ListCell<Resource>() {
+                @Override
+                protected void updateItem(Resource item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+            
+            // Set custom button cell for selected item display
+            resourceComboBox.setButtonCell(new ListCell<Resource>() {
+                @Override
+                protected void updateItem(Resource item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+        }
+    }
+    
+    /**
+     * Setup urgency button styling for selected state
+     */
+    private void setupUrgencyButtons() {
+        // Add listeners to update button styles when selected
+        if (urgencyGroup != null) {
+            urgencyGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+                // Reset all button styles
+                resetUrgencyButtonStyle(urgencyLowBtn);
+                resetUrgencyButtonStyle(urgencyMediumBtn);
+                resetUrgencyButtonStyle(urgencyHighBtn);
+                resetUrgencyButtonStyle(urgencyCriticalBtn);
+                
+                // Apply selected style to the selected button
+                if (newToggle == urgencyLowBtn) {
+                    applySelectedStyle(urgencyLowBtn, "#10B981", "#ECFDF5");
+                } else if (newToggle == urgencyMediumBtn) {
+                    applySelectedStyle(urgencyMediumBtn, "#F59E0B", "#FEF3C7");
+                } else if (newToggle == urgencyHighBtn) {
+                    applySelectedStyle(urgencyHighBtn, "#EF4444", "#FEE2E2");
+                } else if (newToggle == urgencyCriticalBtn) {
+                    applySelectedStyle(urgencyCriticalBtn, "#DC2626", "#FEE2E2");
+                }
+            });
+        }
+    }
+    
+    /**
+     * Reset urgency button to default style
+     */
+    private void resetUrgencyButtonStyle(ToggleButton button) {
+        if (button != null) {
+            button.setStyle("-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; " +
+                          "-fx-font-weight: 600; -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; " +
+                          "-fx-border-color: #E2E8F0; -fx-border-width: 2px; -fx-border-radius: 25px; -fx-cursor: hand;");
+        }
+    }
+    
+    /**
+     * Apply selected style to urgency button
+     */
+    private void applySelectedStyle(ToggleButton button, String borderColor, String bgColor) {
+        if (button != null) {
+            button.setStyle("-fx-padding: 12px 32px; -fx-background-radius: 25px; -fx-font-size: 14px; " +
+                          "-fx-font-weight: 600; -fx-background-color: " + bgColor + "; -fx-text-fill: " + borderColor + "; " +
+                          "-fx-border-color: " + borderColor + "; -fx-border-width: 2.5px; -fx-border-radius: 25px; -fx-cursor: hand;");
         }
     }
     

@@ -7,35 +7,53 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.communityhub.ui.controllers.AdminDashboardController">
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header">
+      <VBox styleClass="modern-header">
          <children>
-            <Label text="🛠️" style="-fx-font-size: 24px;" />
-            <Label styleClass="title" text="Admin Dashboard">
-               <font>
-                  <Font name="System Bold" size="22.0" />
-               </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <Label fx:id="welcomeLabel" text="Welcome, Admin" styleClass="text-secondary">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="secondary-button" text="Logout" />
-         </children>
-      </HBox>
-   </top>
-   <left>
-      <VBox prefWidth="240.0" styleClass="sidebar">
-         <children>
-            <Button fx:id="resourcesButton" mnemonicParsing="false" onAction="#showResourceManagement" styleClass="sidebar-button" text="📦 Resource Management" />
-            <Button fx:id="usersButton" mnemonicParsing="false" onAction="#showUserManagement" styleClass="sidebar-button" text="👥 User Management" />
-            <Button fx:id="requestsButton" mnemonicParsing="false" onAction="#showRequestOverview" styleClass="sidebar-button" text="📋 Request Overview" />
-            <Button fx:id="reportsButton" mnemonicParsing="false" onAction="#showReports" styleClass="sidebar-button" text="📊 System Reports" />
-            <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#showSettings" styleClass="sidebar-button" text="⚙️ Settings" />
+            <!-- Main Navigation Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="32.0" styleClass="navbar">
+               <children>
+                  <!-- Logo Section -->
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <Label text="⚙" styleClass="app-logo" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+                        <VBox spacing="2.0">
+                           <children>
+                              <Label text="ResoMap" styleClass="app-title" />
+                              <Label text="Admin Portal" styleClass="app-subtitle" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <!-- Navigation Items -->
+                  <HBox spacing="8.0" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="dashboardBtn" text="▣ Dashboard" styleClass="nav-button, active" onAction="#showDashboard" focusTraversable="true" />
+                        <Button fx:id="resourcesButton" mnemonicParsing="false" onAction="#showResourceManagement" styleClass="nav-button" text="■ Resources" focusTraversable="true" />
+                        <Button fx:id="usersButton" mnemonicParsing="false" onAction="#showUserManagement" styleClass="nav-button" text="⚉ Users" focusTraversable="true" />
+                        <Button fx:id="requestsButton" mnemonicParsing="false" onAction="#showRequestOverview" styleClass="nav-button" text="☰ Requests" focusTraversable="true" />
+                        <Button fx:id="reportsButton" mnemonicParsing="false" onAction="#showReports" styleClass="nav-button" text="▤ Reports" focusTraversable="true" />
+                        <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#showSettings" styleClass="nav-button" text="⚙ Settings" focusTraversable="true" />
+                     </children>
+                  </HBox>
+                  
+                  <!-- User Section -->
+                  <HBox alignment="CENTER_RIGHT" spacing="16.0">
+                     <children>
+                        <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                           <children>
+                              <Label fx:id="welcomeLabel" text="Welcome, Admin" styleClass="user-name" />
+                              <Label text="System Administrator" styleClass="user-role" />
+                           </children>
+                        </VBox>
+                        <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="logout-button" text="⎋ Logout" focusTraversable="true" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </children>
       </VBox>
-   </left>
+   </top>
    <center>
       <StackPane fx:id="contentPane">
          <children>
@@ -43,116 +61,164 @@
                <content>
                   <VBox spacing="32.0">
                      <children>
-                        <!-- Welcome Section -->
-                        <VBox spacing="8.0">
+                        
+                        <!-- Hero Action Section -->
+                        <VBox alignment="CENTER" spacing="24.0" styleClass="hero-section">
                            <children>
-                              <Label text="Welcome to Community Resource Hub" styleClass="heading-2">
-                                 <font>
-                                    <Font name="System Bold" size="28.0" />
-                                 </font>
-                              </Label>
-                              <Label text="Manage your community resources and support network" styleClass="text-secondary">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
+                              <Label text="System Administration" styleClass="hero-title" />
+                              <Label text="Manage resources, users, and monitor system activity" styleClass="hero-subtitle" />
+                              <HBox alignment="CENTER" spacing="16.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#showResourceManagement" styleClass="cta-button" text="Manage Resources" focusTraversable="true">
+                                       <graphic>
+                                          <Label text="■" styleClass="button-icon" />
+                                       </graphic>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#showRequestOverview" styleClass="cta-button" text="View Requests" focusTraversable="true">
+                                       <graphic>
+                                          <Label text="☰" styleClass="button-icon" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                         
-                        <!-- Stats Grid -->
-                        <GridPane hgap="20.0" vgap="20.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
+                        <!-- Enhanced Statistics Dashboard -->
+                        <VBox spacing="20.0">
                            <children>
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card">
+                              <HBox alignment="CENTER_LEFT" spacing="12.0">
                                  <children>
-                                    <Label text="📦" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="totalResourcesLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Total Resources" />
+                                    <Label text="▤" styleClass="section-icon" />
+                                    <Label text="System Overview" styleClass="section-heading" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#refreshData" styleClass="secondary-button" text="↻ Refresh" />
                                  </children>
-                              </VBox>
+                              </HBox>
                               
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="1">
+                              <GridPane hgap="24.0" vgap="24.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
                                  <children>
-                                    <Label text="👥" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="totalUsersLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Total Users" />
+                                    <!-- Total Resources Card -->
+                                    <VBox styleClass="modern-stat-card, stat-primary" spacing="16.0" alignment="CENTER">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="■" styleClass="stat-icon" />
+                                                <Label fx:id="totalResourcesLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Total Resources" styleClass="stat-title" />
+                                                <Label text="All system resources" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Total Users Card -->
+                                    <VBox styleClass="modern-stat-card, stat-secondary" spacing="16.0" alignment="CENTER" GridPane.columnIndex="1">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="⚉" styleClass="stat-icon" />
+                                                <Label fx:id="totalUsersLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Total Users" styleClass="stat-title" />
+                                                <Label text="Registered community members" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Active Requests Card -->
+                                    <VBox styleClass="modern-stat-card, stat-primary" spacing="16.0" alignment="CENTER" GridPane.columnIndex="2">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="☰" styleClass="stat-icon" />
+                                                <Label fx:id="activeRequestsLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Active Requests" styleClass="stat-title" />
+                                                <Label text="Currently in progress" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Pending Requests Card -->
+                                    <VBox styleClass="modern-stat-card, stat-warning" spacing="16.0" alignment="CENTER" GridPane.rowIndex="1">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="⧗" styleClass="stat-icon" />
+                                                <Label fx:id="pendingRequestsLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Pending Requests" styleClass="stat-title" />
+                                                <Label text="Awaiting assignment" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Critical Requests Card -->
+                                    <VBox styleClass="modern-stat-card, stat-danger" spacing="16.0" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="⚠" styleClass="stat-icon" />
+                                                <Label fx:id="criticalRequestsLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Critical Requests" styleClass="stat-title" />
+                                                <Label text="Urgent attention needed" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Available Resources Card -->
+                                    <VBox styleClass="modern-stat-card, stat-success" spacing="16.0" alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <children>
+                                                <Label text="✓" styleClass="stat-icon" />
+                                                <Label fx:id="availableResourcesLabel" text="0" styleClass="stat-number-large" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="CENTER" spacing="4.0">
+                                             <children>
+                                                <Label text="Available Resources" styleClass="stat-title" />
+                                                <Label text="Ready for distribution" styleClass="stat-description" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
                                  </children>
-                              </VBox>
-                              
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="2">
-                                 <children>
-                                    <Label text="📋" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="activeRequestsLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Active Requests" />
-                                 </children>
-                              </VBox>
-                              
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label text="⏳" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="pendingRequestsLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Pending Requests" />
-                                 </children>
-                              </VBox>
-                              
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label text="🚨" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="criticalRequestsLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Critical Requests" />
-                                 </children>
-                              </VBox>
-                              
-                              <VBox alignment="CENTER" spacing="12.0" styleClass="stat-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label text="✅" style="-fx-font-size: 32px;" />
-                                    <Label fx:id="availableResourcesLabel" styleClass="stat-number" text="0">
-                                       <font>
-                                          <Font name="System Bold" size="36.0" />
-                                       </font>
-                                    </Label>
-                                    <Label styleClass="stat-label" text="Available Resources" />
-                                 </children>
-                              </VBox>
+                              </GridPane>
                            </children>
-                        </GridPane>
+                        </VBox>
                         
-                        <!-- Action Buttons -->
-                        <HBox alignment="CENTER" spacing="16.0">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#showResourceManagement" styleClass="primary-button" text="Manage Resources" />
-                              <Button mnemonicParsing="false" onAction="#showRequestOverview" styleClass="primary-button" text="View Requests" />
-                              <Button mnemonicParsing="false" onAction="#refreshData" styleClass="secondary-button" text="🔄 Refresh Data" />
-                           </children>
-                        </HBox>
                      </children>
                      <padding>
                         <Insets bottom="32.0" left="32.0" right="32.0" top="32.0" />

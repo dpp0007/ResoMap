@@ -204,7 +204,7 @@ public class RegisterController implements Initializable {
             scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
             
             stage.setScene(scene);
-            stage.setTitle("Community Resource Hub - Login");
+            stage.setTitle("ResoMap - Login");
             
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to load login screen", e);

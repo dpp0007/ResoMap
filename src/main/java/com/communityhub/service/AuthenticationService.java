@@ -11,11 +11,8 @@ import com.communityhub.model.Volunteer;
 import com.communityhub.model.Requester;
 import com.communityhub.util.SessionManager;
 import com.communityhub.util.ValidationUtils;
+import com.communityhub.util.PasswordUtils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -40,7 +37,6 @@ public class AuthenticationService {
     // Security configuration
     private static final int MAX_LOGIN_ATTEMPTS = 5;
     private static final long LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-    private static final String SALT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     
     /**
      * Constructor initializes the authentication service
@@ -81,10 +77,13 @@ public class AuthenticationService {
                 throw AuthenticationException.invalidLogin(username);
             }
             
-            // Verify password
-            String hashedPassword = hashPassword(password, getSaltFromHash(user.getPasswordHash()));
-            if (!user.getPasswordHash().equals(hashedPassword)) {
+            // Verify password using PasswordUtils
+            logger.info("Verifying password for user: " + username);
+            logger.fine("Stored hash: " + user.getPasswordHash());
+            
+            if (!PasswordUtils.verifyPassword(password, user.getPasswordHash())) {
                 recordFailedLogin(username);
+                logger.warning("Password verification failed for user: " + username);
                 throw AuthenticationException.invalidLogin(username);
             }
             
@@ -150,8 +149,8 @@ public class AuthenticationService {
             throw InvalidInputException.invalidEmail(email);
         }
         
-        // Hash password
-        String hashedPassword = hashPasswordWithSalt(password);
+        // Hash password using PasswordUtils
+        String hashedPassword = PasswordUtils.hashPassword(password);
         
         // Create user based on role (polymorphism)
         User newUser;
@@ -200,14 +199,13 @@ public class AuthenticationService {
             throw new AuthenticationException("User not found");
         }
         
-        // Verify current password
-        String hashedCurrentPassword = hashPassword(currentPassword, getSaltFromHash(user.getPasswordHash()));
-        if (!user.getPasswordHash().equals(hashedCurrentPassword)) {
+        // Verify current password using PasswordUtils
+        if (!PasswordUtils.verifyPassword(currentPassword, user.getPasswordHash())) {
             throw new AuthenticationException("Current password is incorrect");
         }
         
-        // Update password
-        String hashedNewPassword = hashPasswordWithSalt(newPassword);
+        // Update password using PasswordUtils
+        String hashedNewPassword = PasswordUtils.hashPassword(newPassword);
         user.setPasswordHash(hashedNewPassword);
         userDAO.update(user);
         
@@ -316,58 +314,4 @@ public class AuthenticationService {
         return true;
     }
     
-    /**
-     * Hashes a password with a new random salt
-     * @param password Plain text password
-     * @return Salted and hashed password
-     */
-    private String hashPasswordWithSalt(String password) {
-        String salt = generateSalt();
-        String hash = hashPassword(password, salt);
-        return salt + ":" + hash;
-    }
-    
-    /**
-     * Hashes a password with a given salt
-     * @param password Plain text password
-     * @param salt Salt to use
-     * @return Hashed password
-     */
-    private String hashPassword(String password, String salt) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt.getBytes());
-            byte[] hashedPassword = md.digest(password.getBytes());
-            return Base64.getEncoder().encodeToString(hashedPassword);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 algorithm not available", e);
-        }
-    }
-    
-    /**
-     * Generates a random salt
-     * @return Random salt string
-     */
-    private String generateSalt() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder salt = new StringBuilder(16);
-        
-        for (int i = 0; i < 16; i++) {
-            salt.append(SALT_CHARS.charAt(random.nextInt(SALT_CHARS.length())));
-        }
-        
-        return salt.toString();
-    }
-    
-    /**
-     * Extracts salt from a stored password hash
-     * @param storedHash Stored password hash with salt
-     * @return Salt portion
-     */
-    private String getSaltFromHash(String storedHash) {
-        if (storedHash == null || !storedHash.contains(":")) {
-            throw new IllegalArgumentException("Invalid stored password hash format");
-        }
-        return storedHash.split(":")[0];
-    }
 }

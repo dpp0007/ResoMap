@@ -1499,6 +1499,60 @@
 }
 
 /* ============================================================================
+ * TABLE VIEW STYLING
+ * ============================================================================ */
+.table-view {
+    -fx-padding: 0;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-background-color: #FFFFFF;
+    -fx-pref-width: USE_COMPUTED_SIZE;
+    -fx-max-width: Infinity;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F8FAFC;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #E5E7EB;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 12px 16px;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-text-fill: #374151;
+}
+
+.table-view .table-cell {
+    -fx-padding: 12px 16px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1F2937;
+    -fx-border-color: transparent transparent #F3F4F6 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #F8FAFC;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #EBF4FF;
+}
+
+/* Force table to use full container width */
+.table-view .table-column {
+    -fx-pref-width: USE_COMPUTED_SIZE;
+}
+
+/* ============================================================================
  * UTILITY CLASSES
  * ============================================================================ */
 .text-center {

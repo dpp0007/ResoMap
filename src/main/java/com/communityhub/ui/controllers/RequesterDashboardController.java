@@ -570,6 +570,7 @@ public class RequesterDashboardController implements Initializable, DashboardCon
         if (currentUser != null) {
             loadDashboardData();
             loadResources();
+            loadUserRequests();
         }
     }
     
@@ -653,21 +654,43 @@ public class RequesterDashboardController implements Initializable, DashboardCon
     @FXML
     private void showNewRequest() {
         try {
-            // Load the new request dialog
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/new-request.fxml"));
+            logger.info("Opening new request dialog...");
+            
+            // Load the new request dialog with proper error handling
+            java.net.URL fxmlUrl = getClass().getResource("/fxml/new-request.fxml");
+            if (fxmlUrl == null) {
+                logger.severe("FXML file not found: /fxml/new-request.fxml");
+                showError("File Not Found", "The new request form could not be loaded. Please contact support.");
+                return;
+            }
+            
+            logger.info("Loading FXML from: " + fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             
             // Get the controller and set the current user
             NewRequestController controller = loader.getController();
-            controller.setCurrentUser(currentUser);
+            if (controller != null) {
+                controller.setCurrentUser(currentUser);
+                logger.info("Current user set in NewRequestController");
+            } else {
+                logger.warning("NewRequestController is null");
+            }
             
-            // Create a new stage for the modal dialog with full screen
+            // Create a new stage for the modal dialog
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Create a New Request - Community Resource Hub");
             
-            // Set full screen dimensions
-            Scene requestScene = new Scene(root, 1400, 900);
-            dialogStage.setScene(requestScene);
+            // Create scene with stylesheet
+            Scene scene = new Scene(root, 1400, 900);
+            java.net.URL cssUrl = getClass().getResource("/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            } else {
+                logger.warning("CSS file not found: /css/styles.css");
+            }
+            
+            dialogStage.setScene(scene);
             
             // Window properties for better UX
             dialogStage.setMinWidth(1200);
@@ -682,20 +705,19 @@ public class RequesterDashboardController implements Initializable, DashboardCon
             // Center on screen
             dialogStage.centerOnScreen();
             
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            dialogStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
-            
-            dialogStage.setScene(scene);
+            logger.info("Showing new request dialog...");
             dialogStage.showAndWait();
             
             // Refresh data after dialog closes
+            logger.info("Dialog closed, refreshing data...");
             refreshData();
             
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to open new request dialog", e);
+            logger.log(Level.SEVERE, "IOException while opening new request dialog", e);
             showError("Dialog Error", "Failed to open new request dialog: " + e.getMessage());
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Unexpected error opening new request dialog", e);
+            showError("Error", "An unexpected error occurred: " + e.getMessage());
         }
     }
     

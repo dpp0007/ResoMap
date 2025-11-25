@@ -317,7 +317,7 @@ public class ResourcesController implements Initializable {
             
             // Create full screen window
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Create New Request - Community Resource Hub");
+            dialogStage.setTitle("Create New Request - ResoMap");
             
             Scene scene = new Scene(root, 1400, 900);
             dialogStage.setScene(scene);

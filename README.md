@@ -1,489 +1,531 @@
-# 🏘️ Community Resource Hub
+# 🌐 ResoMap - Community Resource Hub
 
-> A comprehensive JavaFX application for managing community resources, connecting volunteers with those in need, and facilitating efficient resource distribution.
+<div align="center">
 
-[![Java](https://img.shields.io/badge/Java-11+-orange.svg)](https://www.oracle.com/java/)
-[![JavaFX](https://img.shields.io/badge/JavaFX-17.0.2-blue.svg)](https://openjfx.io/)
-[![Maven](https://img.shields.io/badge/Maven-3.8+-red.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-ResoMap-blue.svg)](https://github.com/dpp0007/ResoMap)
+![Java](https://img.shields.io/badge/Java-11-orange?style=for-the-badge&logo=java)
+![JavaFX](https://img.shields.io/badge/JavaFX-17.0.2-blue?style=for-the-badge&logo=java)
+![SQLite](https://img.shields.io/badge/SQLite-3.42-green?style=for-the-badge&logo=sqlite)
+![Maven](https://img.shields.io/badge/Maven-3.8+-red?style=for-the-badge&logo=apache-maven)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+**A modern desktop application for managing community resources and connecting those in need with volunteers**
+
+[Features](#-key-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-documentation) • [Contributing](#-contributing)
+
+</div>
 
 ---
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Technology Stack](#-technology-stack)
-- [Getting Started](#-getting-started)
-- [User Roles](#-user-roles)
-- [Screenshots](#-screenshots)
+- [About](#-about-the-project)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
 - [Project Structure](#-project-structure)
 - [Database Schema](#-database-schema)
-- [Configuration](#-configuration)
+- [API Documentation](#-api-documentation)
+- [Screenshots](#-screenshots)
 - [Testing](#-testing)
 - [Contributing](#-contributing)
+- [Roadmap](#-roadmap)
 - [License](#-license)
+- [Acknowledgements](#-acknowledgements)
 
 ---
 
-## 🌟 Overview
+## 🎯 About The Project
 
-The **Community Resource Hub** is a desktop application designed to streamline the process of connecting community members in need with available resources and volunteers. The system provides role-based access for administrators, volunteers, and requesters, ensuring efficient resource management and request fulfillment.
+**ResoMap** (Resource Management Platform) is a comprehensive desktop application designed to streamline community resource management. It connects individuals in need with available resources and volunteers, creating an efficient ecosystem for community support.
 
-### Key Objectives
+### Why ResoMap?
 
-- 🤝 **Connect** volunteers with community members in need
-- 📦 **Manage** community resources efficiently
-- 📊 **Track** requests and resource distribution
-- 🔒 **Secure** user data with role-based access control
-- 📈 **Analyze** system performance with comprehensive reports
+- **Centralized Management**: Single platform for all community resources
+- **Real-time Tracking**: Monitor resource availability and request status
+- **Role-based Access**: Separate interfaces for admins, volunteers, and requesters
+- **Efficient Matching**: Automated assignment of volunteers to requests
+- **Comprehensive Reporting**: Track resource utilization and community impact
 
-### 🎥 Try It Out
+### Who Is It For?
 
-1. Clone and run the application (see [Quick Start](#-quick-start))
-2. Use the test credentials below to explore different user roles
-3. Experience the full workflow from request creation to completion
+- **Community Organizations**: Manage donations and resource distribution
+- **Non-profits**: Track aid requests and volunteer assignments
+- **Local Governments**: Coordinate emergency resource allocation
+- **Volunteer Groups**: Organize community support initiatives
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
 ### 🔐 Authentication & Security
+- Secure user authentication with salted password hashing (SHA-256)
+- Role-based access control (Admin, Volunteer, Requester)
+- Account lockout protection (5 attempts, 15-minute lockout)
+- Session management with automatic timeout
 
-- **Secure Login System** with password hashing (BCrypt)
-- **User Registration** with email validation
-- **Role-Based Access Control** (Admin, Volunteer, Requester)
-- **Session Management** with automatic timeout
-- **Password Requirements** enforcement
-- **Audit Logging** for security compliance
+### 👥 User Management
+- Three distinct user roles with tailored dashboards
+- User registration with email verification
+- Profile management and password reset
+- Activity tracking and audit logs
 
-### 👨‍💼 Admin Dashboard
+### 📦 Resource Management
+- Comprehensive resource catalog with categories
+- Real-time inventory tracking
+- Low-stock alerts and notifications
+- Resource allocation and distribution tracking
 
-#### Resource Management
-- ✅ Add, edit, and delete resources
-- ✅ Track resource availability and quantities
-- ✅ Categorize resources (Food, Clothing, Medical, Shelter, etc.)
-- ✅ Monitor resource distribution statistics
+### 📋 Request System
+- Create and manage resource requests
+- Urgency level classification (Low, Medium, High, Critical)
+- Request status tracking (Pending, Assigned, In Progress, Completed, Cancelled)
+- Automated volunteer assignment
+- Request history and analytics
 
-#### User Management
-- ✅ View all registered users
-- ✅ Filter by role (Admin, Volunteer, Requester)
-- ✅ Search users by username or email
-- ✅ Track user statistics (Total, Active, by Role)
-- ✅ Manage user permissions
+### 🎯 Dashboard Features
 
-#### Request Overview
-- ✅ Monitor all help requests in real-time
-- ✅ Filter by status (Pending, Assigned, Completed)
-- ✅ Filter by urgency level
-- ✅ View request statistics and completion rates
-- ✅ Assign volunteers to requests
+#### Admin Dashboard
+- System-wide statistics and analytics
+- User management (create, edit, delete users)
+- Resource inventory management
+- Request oversight and manual assignment
+- System configuration and settings
 
-#### System Reports
-- ✅ Generate comprehensive system reports
-- ✅ Customizable date range selection
-- ✅ Key metrics dashboard:
-  - Total requests and completion rate
-  - Average response time
-  - Active volunteers count
-  - Resources distributed
-  - Average user ratings
-- ✅ Detailed reports by category:
-  - Request statistics by type
-  - User activity tracking
-  - Resource usage analysis
-- ✅ Export reports in multiple formats
+#### Volunteer Dashboard
+- View available requests
+- Accept and manage assigned requests
+- Update request status
+- Communication with requesters
+- Volunteer activity history
 
-#### System Settings
-- ✅ **General Settings**: Application name, organization info, contact details
-- ✅ **Request Settings**: Max requests per user, timeout configuration, urgency thresholds
-- ✅ **Database Settings**: Connection configuration, backup management, optimization tools
-- ✅ **Security Settings**: Password policies, session timeout, two-factor authentication
-- ✅ **Database Maintenance**:
-  - One-click database backup
-  - Database optimization
-  - Cache clearing
-- ✅ **Audit Log Viewer**: View system activities with detailed table
-- ✅ **GDPR Compliance**: Export user data in multiple formats (HTML/PDF, JSON, CSV, XML)
+#### Requester Dashboard
+- Create new resource requests
+- Track request status
+- View available resources
+- Request history and feedback
+- Communication with volunteers
 
-### 🙋 Volunteer Dashboard
-
-#### Available Requests
-- ✅ Browse all pending help requests
-- ✅ Filter by urgency level
-- ✅ View detailed request information
-- ✅ Accept requests with one click
-- ✅ Real-time request updates
-
-#### My Assignments
-- ✅ View all assigned requests
-- ✅ Filter by status
-- ✅ Update request status (In Progress, Completed)
-- ✅ Track completion history
-- ✅ View requester contact information
-
-#### Resources Browser
-- ✅ Modern card-based resource display
-- ✅ Search by name, category, or location
-- ✅ Filter by category
-- ✅ View resource availability in real-time
-- ✅ Beautiful themed cards (Food, Clothing, Medical, Shelter)
-- ✅ Contact information for each resource
-
-#### Profile Section
-- ✅ View volunteer statistics:
-  - Active assignments count
-  - Completed requests count
-  - Impact score calculation
-- ✅ Member since information
-- ✅ Update profile information
-- ✅ View activity history
-
-### 📝 Requester Dashboard
-
-#### Dashboard Overview
-- ✅ Quick statistics (Total requests, Pending, Completed)
-- ✅ Recent activity feed
-- ✅ Quick action buttons
-
-#### Browse Resources
-- ✅ View all available resources
-- ✅ Search and filter capabilities
-- ✅ Detailed resource information
-- ✅ Check availability status
-
-#### My Requests
-- ✅ View all submitted requests
-- ✅ Track request status in real-time
-- ✅ View assigned volunteer information
-- ✅ Request history and timeline
-
-#### New Request
-- ✅ Submit new help requests
-- ✅ Select from available resources
-- ✅ Set urgency level (Low, Medium, High, Critical)
-- ✅ Add detailed descriptions
-- ✅ Specify quantity needed
-
-#### Feedback System
-- ✅ Submit feedback on completed requests
-- ✅ Rate services (1-5 stars)
-- ✅ Provide detailed comments
-- ✅ Anonymous feedback option
-
-#### Profile Management
-- ✅ Update personal information
-- ✅ Change password
-- ✅ View account statistics
+### 📊 Reporting & Analytics
+- Resource utilization reports
+- Request fulfillment metrics
+- Volunteer activity statistics
+- Community impact dashboards
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠 Tech Stack
 
 ### Core Technologies
+- **Language**: Java 11
+- **UI Framework**: JavaFX 17.0.2
+- **Build Tool**: Apache Maven 3.8+
+- **Database**: SQLite 3.42 (Development) / MySQL 8.0 (Production)
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Java** | 11+ | Core programming language |
-| **JavaFX** | 17.0.2 | UI framework |
-| **Maven** | 3.8+ | Build automation and dependency management |
-| **SQLite** | 3.42.0 | Embedded database |
-| **BCrypt** | 0.10.2 | Password hashing |
+### Key Libraries & Frameworks
+- **JavaFX Controls**: Modern UI components
+- **JavaFX FXML**: Declarative UI design
+- **JDBC**: Database connectivity
+- **JUnit 5**: Unit testing
+- **Mockito**: Mocking framework for tests
 
-### Key Libraries
-
-```xml
-<!-- JavaFX Components -->
-<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-controls</artifactId>
-    <version>17.0.2</version>
-</dependency>
-
-<!-- Database -->
-<dependency>
-    <groupId>org.xerial</groupId>
-    <artifactId>sqlite-jdbc</artifactId>
-    <version>3.42.0.0</version>
-</dependency>
-
-<!-- Security -->
-<dependency>
-    <groupId>at.favre.lib</groupId>
-    <artifactId>bcrypt</artifactId>
-    <version>0.10.2</version>
-</dependency>
-```
+### Development Tools
+- **IDE**: IntelliJ IDEA / Eclipse / VS Code
+- **Version Control**: Git
+- **Database Tools**: SQLite Browser / MySQL Workbench
 
 ---
 
-## 🚀 Getting Started
+## 🏗 Architecture
 
-### 🔥 Quick Start
+### High-Level System Architecture
 
-```bash
-# Clone the repository
-git clone https://github.com/dpp0007/ResoMap.git
-cd ResoMap
-
-# Build and run
-mvn clean javafx:run
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Presentation Layer                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │    Admin     │  │  Volunteer   │  │  Requester   │      │
+│  │  Dashboard   │  │  Dashboard   │  │  Dashboard   │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│         │                  │                  │              │
+│         └──────────────────┴──────────────────┘              │
+│                            │                                 │
+├────────────────────────────┼─────────────────────────────────┤
+│                     Business Logic Layer                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │ Authentication│  │   Resource   │  │   Request    │      │
+│  │   Service    │  │   Service    │  │   Service    │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│         │                  │                  │              │
+├────────────────────────────┼─────────────────────────────────┤
+│                      Data Access Layer                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │   User DAO   │  │ Resource DAO │  │ Request DAO  │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│         │                  │                  │              │
+├────────────────────────────┼─────────────────────────────────┤
+│                       Database Layer                         │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │              SQLite / MySQL Database                  │  │
+│  │  ┌─────────┐  ┌──────────┐  ┌──────────┐            │  │
+│  │  │  Users  │  │Resources │  │ Requests │            │  │
+│  │  └─────────┘  └──────────┘  └──────────┘            │  │
+│  └───────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-> **Note**: The application will automatically create the database and sample data on first run.
+### Design Patterns Used
+
+- **MVC (Model-View-Controller)**: Separation of concerns
+- **DAO (Data Access Object)**: Database abstraction
+- **Singleton**: Session management, database connection
+- **Factory**: Service creation and dependency injection
+- **Observer**: UI updates and event handling
+- **Strategy**: Different authentication strategies
+
+---
+
+## 📥 Installation
 
 ### Prerequisites
 
-- **Java Development Kit (JDK)** 11 or higher
-- **Apache Maven** 3.8 or higher
+Before you begin, ensure you have the following installed:
+
+- **Java Development Kit (JDK) 11 or higher**
+  ```bash
+  java -version  # Should show version 11+
+  ```
+
+- **Apache Maven 3.8 or higher**
+  ```bash
+  mvn -version  # Should show version 3.8+
+  ```
+
 - **Git** (for cloning the repository)
+  ```bash
+  git --version
+  ```
 
-### Installation
+### Step-by-Step Installation
 
-1. **Clone the repository**
+1. **Clone the Repository**
    ```bash
-   git clone https://github.com/dpp0007/ResoMap.git
-   cd ResoMap
+   git clone https://github.com/yourusername/resomap.git
+   cd resomap
    ```
 
-2. **Build the project**
+2. **Build the Project**
    ```bash
    mvn clean install
    ```
 
-3. **Run the application**
+3. **Run the Application**
    ```bash
    mvn javafx:run
    ```
 
+### Alternative: Run with JAR
+
+1. **Build JAR file**
+   ```bash
+   mvn clean package
+   ```
+
+2. **Run the JAR**
+   ```bash
+   java -jar target/community-resource-hub-1.0.0.jar
+   ```
+
+### Database Configuration
+
+The application uses SQLite by default (no configuration needed). To use MySQL:
+
+1. **Create MySQL Database**
+   ```sql
+   CREATE DATABASE community_hub;
+   ```
+
+2. **Update Configuration** in `DBConnection.java`:
+   ```java
+   private static final boolean USE_MYSQL = true;
+   private static final String MYSQL_URL = "jdbc:mysql://localhost:3306/community_hub";
+   private static final String MYSQL_USER = "your_username";
+   private static final String MYSQL_PASSWORD = "your_password";
+   ```
+
+---
+
+## 🚀 Usage
+
 ### First Time Setup
 
-The application will automatically:
-- Create the SQLite database (`community_hub.db`)
-- Initialize database schema
-- Create sample data for testing
+1. **Launch the Application**
+   ```bash
+   mvn javafx:run
+   ```
 
----
+2. **Sample Data**: The application automatically creates sample data on first run:
+   - 15 users (3 admins, 5 volunteers, 7 requesters)
+   - 30 resources across 6 categories
+   - 20 sample requests with various statuses
 
-## 👥 User Roles
+### Login Credentials
 
-### 🔑 Test Credentials
+#### Admin Users
+```
+Username: admin
+Password: Admin123!
 
-| Role | Username | Password | Description |
-|------|----------|----------|-------------|
-| **Admin** | `admin` | `pass` | Full system access and management |
-| **Volunteer** | `volunteer1` | `pass` | Accept and fulfill requests |
-| **Volunteer** | `volunteer2` | `pass` | Accept and fulfill requests |
-| **Requester** | `requester1` | `pass` | Submit help requests |
-| **Requester** | `requester2` | `pass` | Submit help requests |
+Username: superadmin
+Password: Super123!
 
-### Role Permissions
+Username: manager
+Password: Manager123!
+```
 
-#### 👨‍💼 Administrator
-- ✅ Full access to all features
-- ✅ Manage users and roles
-- ✅ Manage resources
-- ✅ View all requests
-- ✅ Generate system reports
-- ✅ Configure system settings
-- ✅ Access audit logs
-- ✅ Export user data (GDPR)
+#### Volunteer Users
+```
+Username: volunteer1
+Password: Volunteer123!
 
-#### 🙋 Volunteer
-- ✅ View available requests
-- ✅ Accept and fulfill requests
-- ✅ Update request status
-- ✅ Browse resources
-- ✅ Manage profile
-- ✅ View assignment history
+Username: volunteer2
+Password: Volunteer123!
+```
 
-#### 📝 Requester
-- ✅ Submit help requests
-- ✅ Browse available resources
-- ✅ Track request status
-- ✅ Provide feedback
-- ✅ Manage profile
-- ✅ View request history
+#### Requester Users
+```
+Username: user1
+Password: User123!
 
----
+Username: user2
+Password: User123!
+```
 
-## 📸 Screenshots
+### Common Workflows
 
-### Login Screen
-Clean and modern authentication interface with role-based access.
+#### As a Requester
 
-### Admin Dashboard
-Comprehensive overview with statistics, resource management, and system controls.
+1. **Create a New Request**
+   - Login with requester credentials
+   - Click "Create New Request" button
+   - Select resource category
+   - Enter description and urgency level
+   - Submit request
 
-### Volunteer Dashboard
-Intuitive interface for browsing requests and managing assignments with modern card-based design.
+2. **Track Request Status**
+   - View "My Requests" table
+   - Check status updates
+   - Communicate with assigned volunteer
 
-### Requester Dashboard
-User-friendly interface for submitting requests and tracking status.
+#### As a Volunteer
+
+1. **Accept Requests**
+   - Login with volunteer credentials
+   - Browse available requests
+   - Click "Accept" on desired request
+   - Update status as you fulfill the request
+
+2. **Manage Assignments**
+   - View assigned requests
+   - Update progress
+   - Mark as completed
+
+#### As an Admin
+
+1. **Manage Resources**
+   - Add new resources
+   - Update inventory levels
+   - Set low-stock alerts
+
+2. **Oversee Requests**
+   - View all requests
+   - Manually assign volunteers
+   - Generate reports
 
 ---
 
 ## 📁 Project Structure
 
 ```
-ResoMap/
+resomap/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/communityhub/
-│   │   │       ├── CommunityHubApplication.java
-│   │   │       ├── dao/                    # Data Access Objects
-│   │   │       │   ├── BaseDAO.java
-│   │   │       │   ├── UserDAO.java
-│   │   │       │   ├── ResourceDAO.java
-│   │   │       │   ├── RequestDAO.java
-│   │   │       │   └── FeedbackDAO.java
-│   │   │       ├── exception/              # Custom Exceptions
-│   │   │       │   ├── AuthenticationException.java
-│   │   │       │   ├── DatabaseException.java
-│   │   │       │   └── InvalidInputException.java
-│   │   │       ├── model/                  # Domain Models
-│   │   │       │   ├── User.java
-│   │   │       │   ├── Resource.java
-│   │   │       │   ├── Request.java
-│   │   │       │   ├── Feedback.java
-│   │   │       │   ├── RequestStatus.java
-│   │   │       │   ├── UrgencyLevel.java
-│   │   │       │   └── UserRole.java
-│   │   │       ├── service/                # Business Logic
-│   │   │       │   ├── AuthenticationService.java
-│   │   │       │   ├── ResourceService.java
-│   │   │       │   ├── RequestService.java
-│   │   │       │   └── FeedbackService.java
-│   │   │       ├── ui/
-│   │   │       │   └── controllers/        # JavaFX Controllers
-│   │   │       │       ├── LoginController.java
-│   │   │       │       ├── RegisterController.java
-│   │   │       │       ├── AdminDashboardController.java
-│   │   │       │       ├── VolunteerDashboardController.java
-│   │   │       │       ├── RequesterDashboardController.java
-│   │   │       │       └── SystemSettingsController.java
-│   │   │       └── util/                   # Utilities
-│   │   │           ├── DBConnection.java
-│   │   │           ├── PasswordUtil.java
-│   │   │           ├── ValidationUtils.java
-│   │   │           ├── SessionManager.java
-│   │   │           └── LoggingConfig.java
+│   │   ├── java/com/communityhub/
+│   │   │   ├── core/                    # Core utilities and base classes
+│   │   │   │   ├── BaseController.java
+│   │   │   │   ├── Constants.java
+│   │   │   │   ├── ErrorHandler.java
+│   │   │   │   └── ServiceFactory.java
+│   │   │   ├── dao/                     # Data Access Objects
+│   │   │   │   ├── BaseDAO.java
+│   │   │   │   ├── UserDAO.java
+│   │   │   │   ├── ResourceDAO.java
+│   │   │   │   └── RequestDAO.java
+│   │   │   ├── exception/               # Custom exceptions
+│   │   │   │   ├── AuthenticationException.java
+│   │   │   │   ├── DatabaseException.java
+│   │   │   │   └── InvalidInputException.java
+│   │   │   ├── model/                   # Domain models
+│   │   │   │   ├── User.java
+│   │   │   │   ├── Admin.java
+│   │   │   │   ├── Volunteer.java
+│   │   │   │   ├── Requester.java
+│   │   │   │   ├── Resource.java
+│   │   │   │   ├── Request.java
+│   │   │   │   ├── UserRole.java
+│   │   │   │   ├── RequestStatus.java
+│   │   │   │   └── UrgencyLevel.java
+│   │   │   ├── service/                 # Business logic
+│   │   │   │   ├── AuthenticationService.java
+│   │   │   │   ├── ResourceService.java
+│   │   │   │   ├── RequestService.java
+│   │   │   │   └── NotificationService.java
+│   │   │   ├── ui/
+│   │   │   │   ├── components/          # Reusable UI components
+│   │   │   │   │   └── EmptyStateComponent.java
+│   │   │   │   ├── controllers/         # FXML controllers
+│   │   │   │   │   ├── LoginController.java
+│   │   │   │   │   ├── AdminDashboardController.java
+│   │   │   │   │   ├── VolunteerDashboardController.java
+│   │   │   │   │   ├── RequesterDashboardController.java
+│   │   │   │   │   └── NewRequestController.java
+│   │   │   │   └── util/                # UI utilities
+│   │   │   │       └── EnhancedTableCellFactory.java
+│   │   │   ├── util/                    # General utilities
+│   │   │   │   ├── DBConnection.java
+│   │   │   │   ├── SessionManager.java
+│   │   │   │   ├── PasswordUtils.java
+│   │   │   │   ├── ValidationUtils.java
+│   │   │   │   ├── DataInitializer.java
+│   │   │   │   ├── LoginDiagnostic.java
+│   │   │   │   └── LoggingConfig.java
+│   │   │   └── CommunityHubApplication.java  # Main entry point
 │   │   └── resources/
-│   │       ├── css/
-│   │       │   └── styles.css              # Application Styling
-│   │       ├── fxml/                       # UI Layouts
+│   │       ├── assets/                  # Images and icons
+│   │       │   └── icons/
+│   │       ├── css/                     # Stylesheets
+│   │       │   └── styles.css
+│   │       ├── fxml/                    # UI layouts
 │   │       │   ├── login.fxml
 │   │       │   ├── register.fxml
 │   │       │   ├── admin-dashboard.fxml
 │   │       │   ├── volunteer-dashboard.fxml
 │   │       │   ├── requester-dashboard.fxml
-│   │       │   ├── resource-management.fxml
-│   │       │   ├── user-management.fxml
-│   │       │   ├── request-overview.fxml
-│   │       │   ├── system-reports.fxml
-│   │       │   └── system-settings.fxml
-│   │       └── sql/
-│   │           └── init_database.sql       # Database Schema
-├── logs/                                   # Application Logs
-├── exports/                                # User Data Exports
-├── community_hub.db                        # SQLite Database
-├── pom.xml                                 # Maven Configuration
-└── README.md                               # This File
+│   │       │   └── new-request.fxml
+│   │       └── sql/                     # Database scripts
+│   │           └── schema.sql
+│   └── test/                            # Unit tests
+│       └── java/com/communityhub/
+├── logs/                                # Application logs
+├── docs/                                # Documentation
+│   ├── DATABASE.md
+│   ├── LOGIN_CREDENTIALS.md
+│   ├── LOGIN_TROUBLESHOOTING.md
+│   ├── HOW_TO_REFRESH.md
+│   ├── QUICK_REFERENCE_GUIDE.md
+│   ├── QUICK_START_GUIDE.md
+│   └── USER.md
+├── community_hub.db                     # SQLite database
+├── pom.xml                              # Maven configuration
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 🗄️ Database Schema
+## 🗄 Database Schema
 
-### Tables
+The application uses a relational database with the following main tables:
 
-#### **users**
-Stores user account information with role-based access.
+- **users**: User accounts and authentication
+- **resources**: Available community resources
+- **requests**: Resource requests from community members
+- **feedback**: User feedback and ratings
 
-| Column | Type | Description |
-|--------|------|-------------|
-| user_id | VARCHAR(36) | Primary key (UUID) |
-| username | VARCHAR(50) | Unique username |
-| email | VARCHAR(100) | User email address |
-| password_hash | VARCHAR(255) | BCrypt hashed password |
-| role | ENUM | ADMIN, VOLUNTEER, REQUESTER |
-| display_name | VARCHAR(100) | User's display name |
-| created_at | TIMESTAMP | Account creation date |
-| is_active | BOOLEAN | Account status |
-
-#### **resources**
-Manages available community resources.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| resource_id | VARCHAR(36) | Primary key (UUID) |
-| name | VARCHAR(100) | Resource name |
-| description | TEXT | Detailed description |
-| category | VARCHAR(50) | Resource category |
-| quantity | INT | Available quantity |
-| location | VARCHAR(200) | Resource location |
-| contact_info | VARCHAR(200) | Contact information |
-| is_active | BOOLEAN | Availability status |
-
-#### **requests**
-Tracks help requests from community members.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| request_id | VARCHAR(36) | Primary key (UUID) |
-| user_id | VARCHAR(36) | Foreign key to users |
-| resource_id | VARCHAR(36) | Foreign key to resources |
-| volunteer_id | VARCHAR(36) | Assigned volunteer |
-| description | TEXT | Request details |
-| urgency | VARCHAR(50) | Urgency level |
-| status | VARCHAR(50) | Request status |
-| quantity_requested | INT | Quantity needed |
-| created_at | TIMESTAMP | Request creation date |
-| assigned_at | TIMESTAMP | Assignment date |
-| completed_at | TIMESTAMP | Completion date |
-
-#### **feedback**
-Stores user feedback and ratings.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| feedback_id | VARCHAR(36) | Primary key (UUID) |
-| user_id | VARCHAR(36) | Foreign key to users |
-| request_id | VARCHAR(36) | Related request |
-| feedback_type | ENUM | GENERAL, REQUEST_SPECIFIC, SYSTEM_IMPROVEMENT |
-| rating | INT | Rating (1-5) |
-| comments | TEXT | Feedback comments |
-| is_anonymous | BOOLEAN | Anonymous flag |
-| created_at | TIMESTAMP | Submission date |
+For detailed schema information, see [DATABASE.md](docs/DATABASE.md)
 
 ---
 
-## ⚙️ Configuration
+## 📡 API Documentation
 
-### Application Settings
+### Service Layer APIs
 
-Settings can be configured through the Admin Dashboard → Settings page:
+#### AuthenticationService
 
-- **General**: Application name, organization, contact information
-- **Requests**: Max requests per user, timeout settings, urgency alerts
-- **Database**: Connection pool size, backup frequency
-- **Security**: Password requirements, session timeout, audit logging
-
-### Database Configuration
-
-The application uses SQLite by default. Connection settings are in:
 ```java
-src/main/java/com/communityhub/util/DBConnection.java
+// Login
+User login(String username, String password) throws AuthenticationException
+
+// Register new user
+User register(String username, String email, String password, 
+              String confirmPassword, UserRole role) throws InvalidInputException
+
+// Logout
+void logout() throws AuthenticationException
+
+// Get current user
+User getCurrentUser()
 ```
 
-### Logging Configuration
+#### ResourceService
 
-Logs are stored in the `logs/` directory. Configure logging in:
 ```java
-src/main/java/com/communityhub/util/LoggingConfig.java
+// Get all resources
+List<Resource> getAllResources() throws DatabaseException
+
+// Get resource by ID
+Resource getResource(String resourceId) throws DatabaseException
+
+// Create new resource
+void createResource(Resource resource) throws DatabaseException
+
+// Update resource
+void updateResource(Resource resource) throws DatabaseException
+
+// Delete resource
+void deleteResource(String resourceId) throws DatabaseException
 ```
+
+#### RequestService
+
+```java
+// Create new request
+void createRequest(Request request) throws DatabaseException
+
+// Get requests by user
+List<Request> getRequestsByUser(String userId) throws DatabaseException
+
+// Get all requests
+List<Request> getAllRequests() throws DatabaseException
+
+// Update request status
+void updateRequestStatus(String requestId, RequestStatus status) 
+    throws DatabaseException
+
+// Assign volunteer to request
+void assignVolunteer(String requestId, String volunteerId) 
+    throws DatabaseException
+```
+
+---
+
+## 📸 Screenshots
+
+### Login Screen
+![Login Screen](docs/screenshots/login.png)
+
+### Admin Dashboard
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+
+### Volunteer Dashboard
+![Volunteer Dashboard](docs/screenshots/volunteer-dashboard.png)
+
+### Requester Dashboard
+![Requester Dashboard](docs/screenshots/requester-dashboard.png)
+
+### Create New Request
+![New Request Form](docs/screenshots/new-request.png)
 
 ---
 
@@ -492,48 +534,118 @@ src/main/java/com/communityhub/util/LoggingConfig.java
 ### Running Tests
 
 ```bash
+# Run all tests
 mvn test
+
+# Run specific test class
+mvn test -Dtest=UserDAOTest
+
+# Run with coverage
+mvn clean test jacoco:report
 ```
 
-### Test Coverage
+### Test Structure
 
-The project includes:
-- Unit tests for service layer
-- Integration tests for database operations
-- UI component tests
-
-### Manual Testing
-
-Use the provided test credentials to test different user roles and workflows.
+```
+src/test/java/com/communityhub/
+├── dao/
+│   ├── UserDAOTest.java
+│   ├── ResourceDAOTest.java
+│   └── RequestDAOTest.java
+├── service/
+│   ├── AuthenticationServiceTest.java
+│   ├── ResourceServiceTest.java
+│   └── RequestServiceTest.java
+└── util/
+    ├── PasswordUtilsTest.java
+    └── ValidationUtilsTest.java
+```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions from the community! Here's how you can help:
 
-1. **Fork the repository**
-2. **Create a feature branch**
+### How to Contribute
+
+1. **Fork the Repository**
+   ```bash
+   git clone https://github.com/yourusername/resomap.git
+   ```
+
+2. **Create a Feature Branch**
    ```bash
    git checkout -b feature/AmazingFeature
    ```
-3. **Commit your changes**
+
+3. **Make Your Changes**
+   - Write clean, documented code
+   - Follow existing code style
+   - Add tests for new features
+
+4. **Commit Your Changes**
    ```bash
    git commit -m 'Add some AmazingFeature'
    ```
-4. **Push to the branch**
+
+5. **Push to Branch**
    ```bash
    git push origin feature/AmazingFeature
    ```
-5. **Open a Pull Request**
+
+6. **Open a Pull Request**
 
 ### Coding Standards
 
 - Follow Java naming conventions
-- Write meaningful commit messages
+- Use meaningful variable and method names
 - Add JavaDoc comments for public methods
-- Include unit tests for new features
-- Update README.md for significant changes
+- Write unit tests for new features
+- Keep methods focused and concise
+
+### Reporting Issues
+
+Found a bug? Have a feature request?
+
+1. Check if the issue already exists
+2. Create a new issue with:
+   - Clear title and description
+   - Steps to reproduce (for bugs)
+   - Expected vs actual behavior
+   - Screenshots if applicable
+
+---
+
+## 🗺 Roadmap
+
+### Version 1.1 (Q1 2024)
+- [ ] Email notifications for request updates
+- [ ] SMS integration for urgent requests
+- [ ] Mobile app (Android/iOS)
+- [ ] Advanced search and filtering
+- [ ] Export reports to PDF/Excel
+
+### Version 1.2 (Q2 2024)
+- [ ] Multi-language support
+- [ ] Dark mode theme
+- [ ] Real-time chat between users
+- [ ] Resource reservation system
+- [ ] Calendar integration
+
+### Version 2.0 (Q3 2024)
+- [ ] Web-based admin portal
+- [ ] API for third-party integrations
+- [ ] Machine learning for request matching
+- [ ] Geographic mapping of resources
+- [ ] Donation tracking and receipts
+
+### Future Enhancements
+- [ ] Blockchain for donation transparency
+- [ ] AI-powered resource allocation
+- [ ] Community forums
+- [ ] Volunteer scheduling system
+- [ ] Impact measurement dashboard
 
 ---
 
@@ -541,51 +653,75 @@ We welcome contributions! Please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+```
+MIT License
+
+Copyright (c) 2024 ResoMap Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 🙏 Acknowledgements
+
+### Technologies & Libraries
+- [JavaFX](https://openjfx.io/) - Modern UI framework for Java
+- [SQLite](https://www.sqlite.org/) - Lightweight database engine
+- [MySQL](https://www.mysql.com/) - Production database
+- [Apache Maven](https://maven.apache.org/) - Build automation
+- [JUnit 5](https://junit.org/junit5/) - Testing framework
+
+### Design Resources
+- [Flaticon](https://www.flaticon.com/) - Icons and graphics
+- [Google Fonts](https://fonts.google.com/) - Typography
+- [Coolors](https://coolors.co/) - Color palette generation
+
+### Inspiration
+- Community resource management best practices
+- Open-source humanitarian projects
+- Modern desktop application design patterns
+
+### Contributors
+Special thanks to all contributors who have helped make ResoMap better!
+
 ---
 
 ## 📞 Contact & Support
 
-- **Project Repository**: [ResoMap on GitHub](https://github.com/dpp0007/ResoMap)
-- **Project Owner**: [@dpp0007](https://github.com/dpp0007)
-- **Issue Tracker**: [GitHub Issues](https://github.com/dpp0007/ResoMap/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/dpp0007/ResoMap/discussions)
+### Get Help
+- 📧 Email: support@resomap.org
+- 💬 Discord: [Join our community](https://discord.gg/resomap)
+- 📖 Documentation: [docs.resomap.org](https://docs.resomap.org)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/resomap/issues)
 
----
-
-## 🙏 Acknowledgments
-
-- JavaFX community for excellent documentation
-- SQLite for the reliable embedded database
-- BCrypt library for secure password hashing
-- All contributors and testers
-
----
-
-## 📊 Project Status
-
-**Current Version**: 1.0.0  
-**Status**: ✅ Production Ready  
-**Last Updated**: November 2025  
-**Repository**: [dpp0007/ResoMap](https://github.com/dpp0007/ResoMap)
-
-### ✨ Recent Updates
-
-- ✅ **Clean Architecture**: Well-organized codebase with proper separation of concerns
-- ✅ **Code Quality**: Comprehensive linting cleanup and optimization
-- ✅ **Icon Consistency**: Fixed icon sizing issues for uniform UI display  
-- ✅ **Professional Documentation**: Complete README with setup instructions
-- ✅ **GitHub Ready**: Proper .gitignore and repository structure
-- ✅ **FXML Architecture**: Modern JavaFX UI with proper controller bindings
-- ✅ **Database Integration**: SQLite with comprehensive DAO pattern implementation
+### Stay Updated
+- ⭐ Star this repository
+- 👀 Watch for updates
+- 🔔 Follow us on [Twitter](https://twitter.com/resomap)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for the Community by [@dpp0007](https://github.com/dpp0007)**
+**Made with ❤️ by the ResoMap Team**
 
-⭐ **Star this repository if you found it helpful!**
-
-[🔗 **View on GitHub**](https://github.com/dpp0007/ResoMap) | [⬆ Back to Top](#-community-resource-hub)
+[⬆ Back to Top](#-resomap---community-resource-hub)
 
 </div>
