@@ -211,6 +211,99 @@ public class RequestService {
     }
     
     /**
+     * MULTI-TABLE TRANSACTION: Fulfills a request by updating both request status and resource quantity
+     * This demonstrates ACID transaction properties with commit/rollback
+     * 
+     * TRANSACTION SCOPE:
+     * 1. Read request and resource data
+     * 2. Validate resource availability
+     * 3. Deduct resource quantity (UPDATE resources table)
+     * 4. Mark request as completed (UPDATE requests table)
+     * 5. COMMIT if both succeed, ROLLBACK if either fails
+     * 
+     * @param requestId Request ID to fulfill
+     * @param fulfilledBy User ID fulfilling the request
+     * @throws InvalidInputException if validation fails
+     * @throws DatabaseException if transaction fails
+     */
+    public synchronized void fulfillRequest(String requestId, String fulfilledBy) 
+            throws InvalidInputException, DatabaseException {
+        
+        ValidationUtils.validateRequired(requestId, "request ID");
+        ValidationUtils.validateRequired(fulfilledBy, "fulfilled by");
+        
+        // Validate request exists and is in correct state
+        Request request = getRequest(requestId);
+        if (request == null) {
+            throw new InvalidInputException("request ID", requestId, "Request not found");
+        }
+        
+        if (request.getStatus() != RequestStatus.IN_PROGRESS && request.getStatus() != RequestStatus.ASSIGNED) {
+            throw new InvalidInputException("request status", request.getStatus().toString(), 
+                "Request must be IN_PROGRESS or ASSIGNED to be fulfilled");
+        }
+        
+        // Load resource
+        Resource resource = resourceDAO.read(request.getResourceId());
+        if (resource == null) {
+            throw new DatabaseException("Resource not found: " + request.getResourceId());
+        }
+        
+        // Validate sufficient quantity
+        int quantityRequested = 1; // Default quantity
+        if (resource.getQuantity() < quantityRequested) {
+            throw new InvalidInputException("resource quantity", String.valueOf(resource.getQuantity()), 
+                "Insufficient resource quantity available");
+        }
+        
+        // BEGIN MULTI-TABLE TRANSACTION
+        // This transaction ensures BOTH operations succeed or BOTH fail (atomicity)
+        try {
+            logger.info("Starting multi-table transaction for request fulfillment: " + requestId);
+            
+            // OPERATION 1: Deduct resource quantity
+            int newQuantity = resource.getQuantity() - quantityRequested;
+            resource.setQuantity(newQuantity);
+            resourceDAO.update(resource);
+            logger.info("Transaction step 1: Resource quantity updated from " + 
+                       (newQuantity + quantityRequested) + " to " + newQuantity);
+            
+            // OPERATION 2: Update request status to COMPLETED
+            request.setStatus(RequestStatus.COMPLETED);
+            requestDAO.update(request);
+            logger.info("Transaction step 2: Request status updated to COMPLETED");
+            
+            // COMMIT: Both operations succeeded
+            requestDAO.connection.commit();
+            logger.info("TRANSACTION COMMITTED: Request fulfilled successfully");
+            
+            // Update cache
+            activeRequests.remove(requestId);
+            criticalRequests.remove(requestId);
+            
+            if (request.getVolunteerId() != null) {
+                List<String> assignments = volunteerAssignments.get(request.getVolunteerId());
+                if (assignments != null) {
+                    assignments.remove(requestId);
+                }
+            }
+            
+            logger.log(Level.INFO, "Request fulfilled: {0} by {1}", new Object[]{requestId, fulfilledBy});
+            
+        } catch (Exception e) {
+            // ROLLBACK: Transaction failed, restore database to previous state
+            try {
+                requestDAO.connection.rollback();
+                logger.warning("TRANSACTION ROLLED BACK: Failed to fulfill request - " + e.getMessage());
+            } catch (Exception rollbackEx) {
+                logger.log(Level.SEVERE, "CRITICAL: Rollback failed", rollbackEx);
+                throw new DatabaseException("Transaction rollback failed", rollbackEx);
+            }
+            throw new DatabaseException("Failed to fulfill request: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
      * Gets a request by ID
      * @param requestId Request ID
      * @return Request if found, null otherwise

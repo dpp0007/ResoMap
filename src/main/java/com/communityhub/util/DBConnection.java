@@ -73,8 +73,10 @@ public class DBConnection {
                 connection = DriverManager.getConnection(DB_URL);
             }
             
-            connection.setAutoCommit(true);
-            logger.info("Database connection established successfully");
+            // CRITICAL: Set autoCommit to FALSE to enable transaction management
+            // This allows proper commit/rollback control in DAO operations
+            connection.setAutoCommit(false);
+            logger.info("Database connection established successfully with transaction support");
             
         } catch (ClassNotFoundException e) {
             throw new DatabaseException("Database driver not found", e);

@@ -7,6 +7,7 @@ import com.communityhub.exception.DatabaseException;
 import com.communityhub.model.Request;
 import com.communityhub.model.RequestStatus;
 import com.communityhub.model.User;
+import com.communityhub.service.DataLoadingService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Volunteer Dashboard Controller - Refactored
+ * Volunteer Dashboard Controller - Refactored with Multithreading
  * Main controller for volunteer dashboard with multi-view navigation
  * 
  * Improvements:
@@ -30,6 +31,7 @@ import java.util.ResourceBundle;
  * - Uses service injection via ServiceFactory
  * - Cleaner navigation with view loading
  * - Reduced code duplication
+ * - MULTITHREADING: Uses DataLoadingService for async data loading
  * 
  * @author ResoMap Team
  * @version 2.0
@@ -48,6 +50,10 @@ public class VolunteerDashboardController extends BaseController implements Init
     // Content pane for loading views
     @FXML private StackPane contentPane;
     
+    // MULTITHREADING: Background data loading service
+    // Thread needed because loading large datasets blocks UI and affects user experience
+    private DataLoadingService dataLoadingService;
+    
     // Dashboard stats (for main dashboard view)
     @FXML private Label availableRequestsLabel;
     @FXML private Label myAssignmentsLabel;
@@ -57,8 +63,12 @@ public class VolunteerDashboardController extends BaseController implements Init
     public void initialize(URL location, ResourceBundle resources) {
         try {
             initializeServices();
+            
+            // Initialize multithreading service for background data loading
+            dataLoadingService = new DataLoadingService();
+            
             setupNavigation();
-            logger.info("VolunteerDashboardController initialized successfully");
+            logger.info("VolunteerDashboardController initialized successfully with multithreading support");
         } catch (DatabaseException e) {
             ErrorHandler.handleDatabaseError(e);
         }
@@ -90,16 +100,47 @@ public class VolunteerDashboardController extends BaseController implements Init
     }
     
     /**
-     * Loads dashboard statistics
+     * Loads dashboard statistics using MULTITHREADING
+     * 
+     * THREAD JUSTIFICATION:
+     * Thread needed because loading large datasets blocks UI and affects user experience.
+     * Loading dashboard statistics requires multiple database queries:
+     * 1. SELECT all available requests (potentially 50-200 records)
+     * 2. SELECT all assignments for current volunteer (JOIN operations)
+     * 3. Filter and count completed requests
+     * 
+     * These operations can take 200-1000ms on slower systems or large datasets.
+     * Without threading, the UI would FREEZE during this time, preventing user interaction.
+     * 
+     * By using DataLoadingService with ExecutorService, we:
+     * - Load data in a background thread (non-blocking)
+     * - Keep the UI responsive and interactive
+     * - Show loading indicators to the user
+     * - Update UI via Platform.runLater() when data is ready
      */
     private void loadDashboardStats() {
-        executeAsync(
+        // Show loading state
+        Platform.runLater(() -> {
+            if (availableRequestsLabel != null) availableRequestsLabel.setText("Loading...");
+            if (myAssignmentsLabel != null) myAssignmentsLabel.setText("Loading...");
+            if (completedRequestsLabel != null) completedRequestsLabel.setText("Loading...");
+        });
+        
+        // MULTITHREADING: Load data asynchronously in background thread
+        dataLoadingService.loadDataAsync(
+            "volunteer-dashboard-stats",
+            // Data loader function (runs in background thread)
             () -> {
+                logger.info("Background thread: Loading dashboard statistics...");
+                
+                // Database operations run in background thread (non-blocking)
                 List<Request> availableRequests = requestService.getAvailableRequests();
                 List<Request> myAssignments = requestService.getRequestsByVolunteer(currentUser.getUserId());
                 long completedCount = myAssignments.stream()
                     .filter(r -> RequestStatus.COMPLETED.equals(r.getStatus()))
                     .count();
+                
+                logger.info("Background thread: Data loaded successfully");
                 
                 return new DashboardStats(
                     availableRequests.size(),
@@ -107,8 +148,21 @@ public class VolunteerDashboardController extends BaseController implements Init
                     completedCount
                 );
             },
-            this::updateDashboardStats
+            // Success callback (runs on JavaFX UI thread)
+            this::updateDashboardStats,
+            // Failure callback (runs on JavaFX UI thread)
+            error -> {
+                logger.severe("Failed to load dashboard stats: " + error.getMessage());
+                Platform.runLater(() -> {
+                    if (availableRequestsLabel != null) availableRequestsLabel.setText("Error");
+                    if (myAssignmentsLabel != null) myAssignmentsLabel.setText("Error");
+                    if (completedRequestsLabel != null) completedRequestsLabel.setText("Error");
+                });
+                ErrorHandler.handleException((Exception) error, "Load Dashboard Stats");
+            }
         );
+        
+        logger.info("Dashboard stats loading initiated in background thread");
     }
     
     /**
