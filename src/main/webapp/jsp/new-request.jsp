@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Request - Community Resource Hub</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=2.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=5.0">
 </head>
 <body>
     <!-- Navigation Bar -->

@@ -149,8 +149,69 @@ public class DBConnection {
             
             logger.info("Database schema initialized successfully");
             
+            // Insert sample data if tables are empty
+            insertSampleDataIfEmpty(stmt);
+            
         } catch (SQLException e) {
             throw new DatabaseException("Failed to initialize database schema", e);
+        }
+    }
+    
+    /**
+     * Inserts sample data if the database is empty
+     * @param stmt Statement to use for queries
+     * @throws SQLException if insertion fails
+     */
+    private void insertSampleDataIfEmpty(Statement stmt) throws SQLException {
+        // Check if users table is empty
+        var rs = stmt.executeQuery("SELECT COUNT(*) as count FROM users");
+        rs.next();
+        int userCount = rs.getInt("count");
+        rs.close();
+        
+        if (userCount == 0) {
+            logger.info("Database is empty, inserting sample data...");
+            
+            // Insert users
+            stmt.execute("INSERT INTO users (user_id, username, email, password_hash, role) VALUES " +
+                "('admin-001', 'admin', 'admin@communityhub.org', 'salt:hash', 'ADMIN')," +
+                "('vol-001', 'volunteer1', 'volunteer1@example.com', 'salt:hash', 'VOLUNTEER')," +
+                "('vol-002', 'volunteer2', 'volunteer2@example.com', 'salt:hash', 'VOLUNTEER')," +
+                "('req-001', 'requester1', 'requester1@example.com', 'salt:hash', 'REQUESTER')," +
+                "('req-002', 'requester2', 'requester2@example.com', 'salt:hash', 'REQUESTER')," +
+                "('req-003', 'requester3', 'requester3@example.com', 'salt:hash', 'REQUESTER')");
+            
+            // Insert resources
+            stmt.execute("INSERT INTO resources (resource_id, name, description, category, quantity, location, contact_info, created_by) VALUES " +
+                "('res-food-001', 'Canned Vegetables', 'Assorted canned vegetables including corn, peas, and carrots.', 'FOOD', 45, 'Community Center - Storage A', 'food@community.org', 'admin-001')," +
+                "('res-food-002', 'Canned Fruits', 'Mixed canned fruits in light syrup.', 'FOOD', 38, 'Community Center - Storage A', 'food@community.org', 'admin-001')," +
+                "('res-food-003', 'Pasta & Rice', 'Bulk pasta and rice supplies for meal preparation.', 'FOOD', 60, 'Community Center - Storage B', 'food@community.org', 'admin-001')," +
+                "('res-food-004', 'Peanut Butter', 'High-protein peanut butter jars.', 'FOOD', 25, 'Community Center - Storage A', 'food@community.org', 'admin-001')," +
+                "('res-food-005', 'Baby Formula', 'Infant formula and baby food supplies.', 'FOOD', 30, 'Family Services - Building C', 'family@community.org', 'admin-001')," +
+                "('res-clothing-001', 'Winter Coats', 'Warm winter coats for adults and children.', 'CLOTHING', 28, 'Donation Center - Building B', 'donations@community.org', 'admin-001')," +
+                "('res-clothing-002', 'Warm Sweaters', 'Wool and fleece sweaters for cold weather.', 'CLOTHING', 35, 'Donation Center - Building B', 'donations@community.org', 'admin-001')," +
+                "('res-clothing-003', 'Thermal Socks', 'Thermal and wool socks for winter warmth.', 'CLOTHING', 100, 'Donation Center - Building B', 'donations@community.org', 'admin-001')," +
+                "('res-shelter-001', 'Emergency Blankets', 'Thermal emergency blankets for temporary shelter.', 'SHELTER', 120, 'Emergency Services - Warehouse', 'emergency@community.org', 'admin-001')," +
+                "('res-shelter-002', 'Sleeping Bags', 'Warm sleeping bags rated for cold weather.', 'SHELTER', 20, 'Emergency Services - Warehouse', 'emergency@community.org', 'admin-001')," +
+                "('res-medical-001', 'First Aid Kits', 'Complete first aid kits with bandages and supplies.', 'MEDICAL', 18, 'Health Center - Supply Room', 'health@community.org', 'admin-001')," +
+                "('res-medical-002', 'Medical Masks', 'N95 and surgical masks for health protection.', 'MEDICAL', 500, 'Health Center - Supply Room', 'health@community.org', 'admin-001')," +
+                "('res-education-001', 'School Supplies', 'Notebooks, pens, pencils, and basic school supplies.', 'EDUCATION', 80, 'Education Center - Room 101', 'education@community.org', 'admin-001')," +
+                "('res-education-002', 'Textbooks', 'Used textbooks for various subjects and grade levels.', 'EDUCATION', 45, 'Education Center - Room 102', 'education@community.org', 'admin-001')," +
+                "('res-other-001', 'Hygiene Products', 'Soap, shampoo, toothpaste, and personal hygiene items.', 'OTHER', 60, 'Community Center - Storage C', 'supplies@community.org', 'admin-001')");
+            
+            // Insert requests
+            stmt.execute("INSERT INTO requests (request_id, requester_id, resource_id, description, urgency_level, status) VALUES " +
+                "('req-001', 'req-001', 'res-food-001', 'Family of four needs emergency food assistance.', 'HIGH', 'PENDING')," +
+                "('req-002', 'req-002', 'res-clothing-001', 'Single mother needs winter coats for children.', 'MEDIUM', 'PENDING')," +
+                "('req-003', 'req-001', 'res-medical-001', 'Need first aid kit for elderly parent.', 'LOW', 'PENDING')," +
+                "('req-004', 'req-003', 'res-education-001', 'Student needs school supplies for new school year.', 'MEDIUM', 'ASSIGNED')," +
+                "('req-005', 'req-002', 'res-shelter-001', 'Temporary shelter needed for family.', 'CRITICAL', 'PENDING')," +
+                "('req-006', 'req-001', 'res-food-005', 'New mother needs baby formula.', 'HIGH', 'PENDING')," +
+                "('req-007', 'req-003', 'res-clothing-003', 'Need warm socks for homeless outreach program.', 'MEDIUM', 'PENDING')," +
+                "('req-008', 'req-002', 'res-other-001', 'Hygiene products needed for family in temporary housing.', 'MEDIUM', 'PENDING')");
+            
+            connection.commit();
+            logger.info("Sample data inserted successfully");
         }
     }
     

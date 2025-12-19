@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requests - Community Resource Hub</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=2.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=5.0">
     <style>
         .requests-container {
             max-width: 1200px;
@@ -472,7 +472,9 @@
                                             <span class="request-id-badge">${fn:substring(request.requestId, 0, 8)}...</span>
                                         </td>
                                         <td class="col-resource">
-                                            <span class="resource-name">${request.resourceId}</span>
+                                            <span class="resource-name">
+                                                ${resourceNameMap[request.resourceId] != null ? resourceNameMap[request.resourceId] : 'Unknown Resource'}
+                                            </span>
                                         </td>
                                         <td class="col-description">
                                             <span class="description-text">${request.description}</span>
@@ -909,6 +911,19 @@
         
         function openAssignModal(requestId, currentVolunteerId) {
             document.getElementById('assignRequestId').value = requestId;
+            
+            // Populate volunteer dropdown
+            const volunteerSelect = document.getElementById('volunteerSelect');
+            volunteerSelect.innerHTML = '<option value="">-- Select a volunteer --</option>';
+            
+            if (volunteers && volunteers.length > 0) {
+                volunteers.forEach(function(volunteer) {
+                    const option = document.createElement('option');
+                    option.value = volunteer.id;
+                    option.textContent = volunteer.name;
+                    volunteerSelect.appendChild(option);
+                });
+            }
             
             // Determine if this is assign or reassign
             if (currentVolunteerId && currentVolunteerId.trim() !== '') {

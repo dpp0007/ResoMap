@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Community Resource Hub</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=2.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=5.0">
     <style>
         .admin-container {
             max-width: 1400px;

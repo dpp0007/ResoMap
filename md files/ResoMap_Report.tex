@@ -1,0 +1,377 @@
+﻿\documentclass[12pt,a4paper,oneside]{report}
+\usepackage[utf-8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{float}
+
+% Configure hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={ResoMap: Community Resource Hub},
+    pdfauthor={Student Name},
+    pdfsubject={Java Servlet Web Application},
+    pdfkeywords={Java, Servlets, JDBC, Resource Management}
+}
+
+% Configure listings for code
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    showstringspaces=false,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    backgroundcolor=\color{lightgray!20},
+    frame=single,
+    rulecolor=\color{black!30},
+    breakatwhitespace=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Set double spacing
+\doublespacing
+
+% Configure header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{ResoMap: Community Resource Hub}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Title formatting
+\title{\textbf{ResoMap: Community Resource Hub} \\ \Large A Java Servlet-Based Web Application for Resource Management and Volunteer Coordination}
+\author{[Student Name] \\ Galgotias University}
+\date{December 19, 2025}
+
+\begin{document}
+
+% Title Page
+\maketitle
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+    \large
+    \textbf{PROJECT INFORMATION}
+    
+    \vspace{1cm}
+    \begin{tabularx}{0.8\textwidth}{lX}
+        \textbf{Institution:} & Galgotias University / Academic Institution Name \\
+        \textbf{Course:} & [Course Code -- Course Name / Capstone Project] \\
+        \textbf{Student Name:} & [Student Name] \\
+        \textbf{Submission Date:} & December 19, 2025 \\
+        \textbf{Academic Period:} & [Semester / Academic Year] \\
+        \textbf{Report Status:} & Final \\
+    \end{tabularx}
+\end{center}
+
+\vspace*{\fill}
+\newpage
+
+% Abstract Page
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+ResoMap is a production-grade, full-stack Java Servlet-based web application designed to centralize community resource management and coordinate volunteer assistance for individuals in need. This project addresses the critical challenge of inefficient resource distribution in communities where traditional systems lack centralized coordination, making it difficult to track available resources, match requests with inventory, and organize volunteer efforts effectively.
+
+The application implements a three-tier layered architecture comprising a Presentation Layer (JSP pages with HTML5/CSS3/JavaScript), a Business Logic Layer (service classes handling core operations), and a Data Access Layer (JDBC-based DAOs with PreparedStatements), all connected to a relational database (SQLite for development, MySQL for production). The system enforces role-based access control across three distinct user roles: Administrators, Volunteers, and Requesters.
+
+Security is paramount, with SHA-256 password hashing using random salt generation, account lockout mechanisms after five failed login attempts, session timeout policies (30 minutes), and complete SQL injection prevention through exclusive use of PreparedStatements.
+
+\textbf{Keywords:} Java Servlets, JDBC, JSP, Resource Management, Volunteer Coordination, Role-Based Access Control, Web Application Architecture
+
+\newpage
+
+% Table of Contents
+\tableofcontents
+\newpage
+
+% Chapter 1: Introduction
+\chapter{Introduction}
+
+\section{Background}
+
+Community organizations, non-profit entities, local government agencies, and volunteer networks operate within complex ecosystems where resource availability and human need must be carefully balanced. In traditional systems, resource management typically occurs through fragmented processes: manual inventory tracking using spreadsheets, uncoordinated volunteer assignment via phone calls and email, paper-based request documentation, and inconsistent communication channels.
+
+\section{Problem Definition}
+
+\textbf{Primary Challenge:} Communities lack a unified digital platform to coordinate resource management and volunteer assignment, resulting in:
+\begin{itemize}
+    \item Fragmented resource tracking across multiple locations and systems
+    \item Inefficient matching between resource requests and available inventory
+    \item Uncoordinated volunteer assignment and task tracking
+    \item Absence of comprehensive audit trails and accountability documentation
+    \item Inability to generate performance metrics or impact reports
+\end{itemize}
+
+\section{Objectives of the System}
+
+\textbf{Primary Objectives:}
+\begin{enumerate}
+    \item Develop a centralized resource management system enabling comprehensive inventory tracking
+    \item Implement intelligent matching algorithms to connect resource requests with available inventory
+    \item Establish automated volunteer coordination workflow reducing manual assignment overhead
+    \item Maintain comprehensive audit trails documenting all resource allocation decisions
+    \item Enforce role-based access control ensuring appropriate system access
+\end{enumerate}
+
+\newpage
+
+% Chapter 2: System Architecture
+\chapter{System Architecture}
+
+\section{Overall Architecture Description}
+
+ResoMap implements a comprehensive four-layer architecture separating concerns across distinct responsibility domains. Each layer has clearly defined responsibilities, interfaces, and communication patterns.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
++---------------------------------------------+
+|    Presentation Layer                       |
+| JSP Pages + HTML5 + CSS3 + JavaScript       |
++---------------------------------------------+
+                   | HTTP
++---------------------------------------------+
+|    Servlet Layer                            |
+| LoginServlet, ResourceServlet, RequestServlet|
+| + AuthFilter, SessionListener               |
++---------------------------------------------+
+                   |
++---------------------------------------------+
+|  Business Logic Layer                       |
+| Services: Authentication, Resource, Request |
++---------------------------------------------+
+                   |
++---------------------------------------------+
+|  Data Access Layer                          |
+| DAOs: User, Resource, Request, Feedback     |
+| + PreparedStatements, Connection Management |
++---------------------------------------------+
+                   | JDBC
++---------------------------------------------+
+|   Database Layer                            |
+| SQLite (Dev) / MySQL (Production)           |
++---------------------------------------------+
+\end{verbatim}
+\caption{Four-Layer System Architecture}
+\end{figure}
+
+\section{Layer Responsibilities}
+
+\subsection{Presentation Layer}
+
+The Presentation Layer comprises JSP templates that render user interfaces and HTML5/CSS3/JavaScript providing formatting and interactivity. This layer receives HTTP requests from client browsers, renders appropriate JSP pages with server-side data, captures user input through HTML forms, and forwards requests to appropriate servlets for processing.
+
+\subsection{Servlet Layer}
+
+The Servlet Layer comprises HTTP request handlers that act as controllers receiving incoming requests, validating input, delegating business logic to services, and directing responses appropriately. Each primary functional domain has a dedicated servlet: LoginServlet handles authentication, DashboardServlet renders role-specific dashboards, ResourceServlet manages resource operations, and RequestServlet handles request lifecycle.
+
+\subsection{Business Logic Layer}
+
+The Business Logic Layer comprises service classes that implement core application rules and coordinate operations across multiple DAOs. AuthenticationService handles user authentication, ResourceService manages resource operations, RequestService implements request lifecycle management, and ActivityService generates activity feeds.
+
+\subsection{Data Access Layer}
+
+The Data Access Layer comprises Data Access Object (DAO) classes that abstract all database operations behind consistent interfaces. All queries use PreparedStatements exclusively, preventing SQL injection vulnerabilities through automatic parameterization and escaping of user input.
+
+\newpage
+
+% Chapter 3: Technology Stack
+\chapter{Technology Stack}
+
+\section{Backend Technologies}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Component} & \textbf{Technology} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+Language & Java & 11 & Object-oriented development \\
+\hline
+Framework & Java Servlets & 4.0 & HTTP request/response handling \\
+\hline
+View Technology & JSP & 2.2 & Server-side template processing \\
+\hline
+Template Library & JSTL & 1.2 & Server-side tag processing \\
+\hline
+JSON Processing & Jackson & 2.15.2 & JSON serialization/deserialization \\
+\hline
+\end{tabularx}
+\caption{Backend Technology Stack}
+\end{table}
+
+\section{Frontend Technologies}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Component} & \textbf{Technology / Details} \\
+\hline
+Markup & HTML5 with semantic elements \\
+\hline
+Styling & CSS3 (Pure CSS, no external frameworks) \\
+\hline
+Interactivity & Vanilla JavaScript (ES6+), Fetch API \\
+\hline
+Responsive Design & Mobile-first CSS Grid \\
+\hline
+\end{tabularx}
+\caption{Frontend Technology Stack}
+\end{table}
+
+\section{Database Technologies}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Aspect} & \textbf{Technology} & \textbf{Version} & \textbf{Use Case} \\
+\hline
+Development & SQLite & 3.42 & Lightweight, embedded database \\
+\hline
+Production & MySQL & 8.0 & Scalable relational database \\
+\hline
+JDBC Driver (Dev) & SQLite JDBC & 3.42.0.0 & Development connectivity \\
+\hline
+JDBC Driver (Prod) & MySQL Connector & 8.0.33 & Production connectivity \\
+\hline
+\end{tabularx}
+\caption{Database Technology Stack}
+\end{table}
+
+\newpage
+
+% Chapter 4: Database Design
+\chapter{Database Design}
+
+\section{Database Selection Rationale}
+
+The application employs a hybrid database approach: SQLite for development environments and MySQL for production deployments. This strategic selection provides distinct benefits for each context while maintaining application portability through JDBC abstraction.
+
+\subsection{SQLite Selection for Development}
+
+\begin{itemize}
+    \item Zero configuration: No separate server installation required
+    \item Embedded operation: Single database file enabling easy backup/sharing
+    \item Lightweight: Minimal resource consumption enabling laptop development
+    \item SQL compatibility: Supports standard SQL enabling knowledge transfer to production
+\end{itemize}
+
+\subsection{MySQL Selection for Production}
+
+\begin{itemize}
+    \item Proven reliability: Production deployments in millions of systems globally
+    \item Scalability: Handles significant concurrent connection volumes
+    \item Replication support: Master-slave replication enabling high availability
+    \item Backup tools: Comprehensive ecosystem of backup and recovery tools
+    \item Security features: User authentication, role-based access, SSL encryption
+\end{itemize}
+
+\section{Entity Relationships}
+
+\begin{enumerate}
+    \item Users to Resources: One-to-Many (one admin creates many resources)
+    \item Users to Requests (Requester): One-to-Many (one requester creates many requests)
+    \item Users to Requests (Volunteer): One-to-Many (one volunteer assigned many requests)
+    \item Users to Feedback: One-to-Many (one user submits many feedback entries)
+    \item Resources to Requests: One-to-Many (one resource has many requests)
+    \item Requests to Feedback: One-to-Many (one request receives many feedback entries)
+\end{enumerate}
+
+\newpage
+
+% Chapter 5: Security Implementation
+\chapter{Security Implementation}
+
+\section{SQL Injection Prevention}
+
+All database queries use PreparedStatements with parameterized queries to prevent SQL injection attacks. The SQL structure is defined separately from data, and data is treated as literal values, not code.
+
+\section{XSS Protection}
+
+Output is escaped using JSTL \texttt{<c:out>} tags to prevent cross-site scripting attacks. Input is sanitized to remove potentially dangerous characters.
+
+\section{Session Security}
+
+\begin{itemize}
+    \item Session ID regeneration on login
+    \item Secure cookie flags (HttpOnly, Secure, SameSite)
+    \item Automatic session timeout (30 minutes)
+    \item Account lockout after 5 failed login attempts
+\end{itemize}
+
+\newpage
+
+% Chapter 6: Deployment
+\chapter{Deployment}
+
+\section{Prerequisites}
+
+\begin{itemize}
+    \item Java 11 or higher
+    \item Apache Maven 3.8 or higher
+    \item Apache Tomcat 9.0 or higher
+\end{itemize}
+
+\section{Build Steps}
+
+\begin{lstlisting}[language=bash]
+mvn clean package
+cp target/community-resource-hub.war $TOMCAT_HOME/webapps/
+$TOMCAT_HOME/bin/startup.sh
+\end{lstlisting}
+
+\newpage
+
+% Chapter 7: Testing and Verification
+\chapter{Testing and Verification}
+
+The application has been tested for:
+
+\begin{itemize}
+    \item End-to-end workflow verification
+    \item Role-based access control enforcement
+    \item Security vulnerability testing
+    \item Edge cases and error handling
+    \item Concurrent user scenarios
+    \item Database transaction integrity
+    \item Performance under load
+\end{itemize}
+
+\newpage
+
+% Chapter 8: Conclusion
+\chapter{Conclusion}
+
+ResoMap provides a comprehensive, secure, and user-friendly platform for community resource management and volunteer coordination. The system is production-ready and suitable for deployment in community organizations, non-profits, and local government agencies.
+
+The implementation demonstrates proficiency in:
+\begin{itemize}
+    \item Java Servlet architecture and design patterns
+    \item JDBC database connectivity and transaction management
+    \item Object-oriented programming principles
+    \item Security best practices and vulnerability prevention
+    \item Multi-tier application architecture
+    \item Responsive web design and user interface development
+\end{itemize}
+
+\end{document}

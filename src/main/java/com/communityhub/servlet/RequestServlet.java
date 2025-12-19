@@ -79,6 +79,19 @@ public class RequestServlet extends HttpServlet {
             request.setAttribute("requests", requests);
             request.setAttribute("userRole", currentUser.getRole().toString());
             
+            // Load all resources and create a map for resource name lookup
+            try {
+                List<Resource> allResources = resourceService.getAllResources();
+                java.util.Map<String, String> resourceNameMap = new java.util.HashMap<>();
+                for (Resource res : allResources) {
+                    resourceNameMap.put(res.getResourceId(), res.getName());
+                }
+                request.setAttribute("resourceNameMap", resourceNameMap);
+                request.setAttribute("allResources", allResources);
+            } catch (DatabaseException e) {
+                logger.log(Level.WARNING, "Failed to load resources for lookup", e);
+            }
+            
             // For admin: load list of volunteers for assignment
             if (currentUser.isAdmin()) {
                 try {

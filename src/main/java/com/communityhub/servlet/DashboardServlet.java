@@ -1,7 +1,9 @@
 package com.communityhub.servlet;
 
+import com.communityhub.dto.ActivityDTO;
 import com.communityhub.exception.DatabaseException;
 import com.communityhub.model.User;
+import com.communityhub.service.ActivityService;
 import com.communityhub.service.RequestService;
 import com.communityhub.service.ResourceService;
 import com.communityhub.service.UserService;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -25,6 +28,7 @@ public class DashboardServlet extends HttpServlet {
     private ResourceService resourceService;
     private RequestService requestService;
     private UserService userService;
+    private ActivityService activityService;
     
     @Override
     public void init() throws ServletException {
@@ -32,6 +36,7 @@ public class DashboardServlet extends HttpServlet {
             resourceService = new ResourceService();
             requestService = new RequestService();
             userService = new UserService();
+            activityService = new ActivityService();
             logger.info("DashboardServlet initialized successfully");
         } catch (DatabaseException e) {
             logger.log(Level.SEVERE, "Failed to initialize services", e);
@@ -56,9 +61,9 @@ public class DashboardServlet extends HttpServlet {
             Map<String, Object> stats = gatherDashboardStats(currentUser);
             request.setAttribute("stats", stats);
             
-            // Get recent activity (placeholder for now)
-            // In a real implementation, you would fetch actual activity data
-            request.setAttribute("recentActivity", java.util.Collections.emptyList());
+            // Get recent activity using ActivityService
+            List<ActivityDTO> recentActivity = activityService.getRecentActivity(currentUser, 10);
+            request.setAttribute("recentActivity", recentActivity);
             
             // Forward to dashboard page
             request.getRequestDispatcher("/jsp/dashboard.jsp").forward(request, response);
@@ -83,6 +88,7 @@ public class DashboardServlet extends HttpServlet {
         doGet(request, response);
     }
     
+
     private Map<String, Object> gatherDashboardStats(User currentUser) throws DatabaseException {
         Map<String, Object> stats = new HashMap<>();
         

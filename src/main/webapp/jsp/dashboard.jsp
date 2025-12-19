@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResoMap - Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=2.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css?v=5.0">
 </head>
 <body>
     
@@ -210,8 +210,13 @@
                                 <li class="activity-item">
                                     <div class="activity-dot"></div>
                                     <div class="activity-content">
-                                        <div class="activity-time">${activity.timestamp}</div>
-                                        <div class="activity-description">${activity.description}</div>
+                                        <div class="activity-time">
+                                            <fmt:formatDate value="${activity.timestamp}" pattern="MMM dd, yyyy HH:mm"/>
+                                        </div>
+                                        <div class="activity-description">${activity.message}</div>
+                                        <div class="activity-actor" style="font-size: 12px; color: #666; margin-top: 4px;">
+                                            by ${activity.actorName}
+                                        </div>
                                     </div>
                                 </li>
                             </c:forEach>
