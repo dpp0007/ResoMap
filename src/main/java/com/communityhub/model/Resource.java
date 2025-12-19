@@ -1,12 +1,10 @@
 package com.communityhub.model;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Resource model class representing community resources
- * Demonstrates encapsulation and proper data modeling
  */
 public class Resource {
     
@@ -20,67 +18,28 @@ public class Resource {
     private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private boolean isAvailable;
     
-    /**
-     * Default constructor for Resource
-     */
+    // Default constructor
     public Resource() {
         this.resourceId = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.isAvailable = true;
-        this.quantity = 0;
     }
     
-    /**
-     * Constructor with basic resource information
-     * @param name Resource name
-     * @param category Resource category
-     * @param description Resource description
-     */
-    public Resource(String name, String category, String description) {
-        this();
-        this.name = name;
-        this.category = category;
-        this.description = description;
-    }
-    
-    /**
-     * Constructor with detailed resource information
-     * @param name Resource name
-     * @param category Resource category
-     * @param description Resource description
-     * @param quantity Available quantity
-     * @param location Resource location
-     * @param contactInfo Contact information
-     * @param createdBy User ID who created the resource
-     */
-    public Resource(String name, String category, String description, int quantity, 
+    // Constructor for new resource
+    public Resource(String name, String description, String category, int quantity, 
                    String location, String contactInfo, String createdBy) {
         this();
         this.name = name;
-        this.category = category;
         this.description = description;
+        this.category = category;
         this.quantity = quantity;
         this.location = location;
         this.contactInfo = contactInfo;
         this.createdBy = createdBy;
     }
     
-    /**
-     * Constructor with all fields (for database loading)
-     * @param resourceId Unique resource identifier
-     * @param name Resource name
-     * @param description Resource description
-     * @param category Resource category
-     * @param quantity Available quantity
-     * @param location Resource location
-     * @param contactInfo Contact information
-     * @param createdBy User ID who created the resource
-     * @param createdAt Creation timestamp
-     * @param updatedAt Last update timestamp
-     */
+    // Constructor for existing resource (from database)
     public Resource(String resourceId, String name, String description, String category, 
                    int quantity, String location, String contactInfo, String createdBy,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -94,18 +53,15 @@ public class Resource {
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isAvailable = quantity > 0;
     }
     
-    // Getters and setters with proper encapsulation
-    
+    // Getters and Setters
     public String getResourceId() {
         return resourceId;
     }
     
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
-        updateTimestamp();
     }
     
     public String getName() {
@@ -114,7 +70,7 @@ public class Resource {
     
     public void setName(String name) {
         this.name = name;
-        updateTimestamp();
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getDescription() {
@@ -123,7 +79,7 @@ public class Resource {
     
     public void setDescription(String description) {
         this.description = description;
-        updateTimestamp();
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getCategory() {
@@ -132,7 +88,7 @@ public class Resource {
     
     public void setCategory(String category) {
         this.category = category;
-        updateTimestamp();
+        this.updatedAt = LocalDateTime.now();
     }
     
     public int getQuantity() {
@@ -140,9 +96,8 @@ public class Resource {
     }
     
     public void setQuantity(int quantity) {
-        this.quantity = Math.max(0, quantity);
-        this.isAvailable = this.quantity > 0;
-        updateTimestamp();
+        this.quantity = quantity;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getLocation() {
@@ -151,7 +106,7 @@ public class Resource {
     
     public void setLocation(String location) {
         this.location = location;
-        updateTimestamp();
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getContactInfo() {
@@ -160,7 +115,7 @@ public class Resource {
     
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
-        updateTimestamp();
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getCreatedBy() {
@@ -169,7 +124,6 @@ public class Resource {
     
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
-        updateTimestamp();
     }
     
     public LocalDateTime getCreatedAt() {
@@ -188,108 +142,22 @@ public class Resource {
         this.updatedAt = updatedAt;
     }
     
-    public boolean isAvailable() {
-        return isAvailable && quantity > 0;
-    }
-    
-    public void setAvailable(boolean available) {
-        this.isAvailable = available;
-        updateTimestamp();
-    }
-    
-    /**
-     * Updates the timestamp when resource data is modified
-     */
-    private void updateTimestamp() {
-        this.updatedAt = LocalDateTime.now();
-    }
-    
-    /**
-     * Decreases the quantity by the specified amount
-     * @param amount Amount to decrease
-     * @return true if successful, false if insufficient quantity
-     */
-    public boolean decreaseQuantity(int amount) {
-        if (amount > 0 && quantity >= amount) {
-            quantity -= amount;
-            isAvailable = quantity > 0;
-            updateTimestamp();
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Increases the quantity by the specified amount
-     * @param amount Amount to increase
-     */
-    public void increaseQuantity(int amount) {
-        if (amount > 0) {
-            quantity += amount;
-            isAvailable = true;
-            updateTimestamp();
-        }
-    }
-    
-    /**
-     * Validates resource data
-     * @return true if resource data is valid
-     */
+    // Validation method
     public boolean isValid() {
-        return resourceId != null && !resourceId.isEmpty() &&
-               name != null && !name.trim().isEmpty() &&
+        return name != null && !name.trim().isEmpty() &&
                category != null && !category.trim().isEmpty() &&
                quantity >= 0;
     }
     
-    /**
-     * Gets a short display name for the resource
-     * @return Display name
-     */
-    public String getDisplayName() {
-        return name + " (" + category + ")";
-    }
-    
-    /**
-     * Gets the availability status as a string
-     * @return Availability status
-     */
-    public String getAvailabilityStatus() {
-        if (!isAvailable) {
-            return "Unavailable";
-        } else if (quantity == 0) {
-            return "Out of Stock";
-        } else if (quantity < 5) {
-            return "Low Stock (" + quantity + ")";
-        } else {
-            return "Available (" + quantity + ")";
-        }
-    }
-    
-    /**
-     * Checks if the resource matches a search query
-     * @param query Search query
-     * @return true if resource matches the query
-     */
-    public boolean matchesSearch(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            return true;
-        }
-        
-        String lowerQuery = query.toLowerCase();
-        return (name != null && name.toLowerCase().contains(lowerQuery)) ||
-               (category != null && category.toLowerCase().contains(lowerQuery)) ||
-               (description != null && description.toLowerCase().contains(lowerQuery)) ||
-               (location != null && location.toLowerCase().contains(lowerQuery));
-    }
-    
-    /**
-     * Gets resource summary information
-     * @return Summary string
-     */
-    public String getSummary() {
-        return String.format("%s - %s (Qty: %d) at %s", 
-                           name, category, quantity, location != null ? location : "Unknown location");
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "resourceId='" + resourceId + '\'' +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", quantity=" + quantity +
+                ", location='" + location + '\'' +
+                '}';
     }
     
     @Override
@@ -298,17 +166,11 @@ public class Resource {
         if (obj == null || getClass() != obj.getClass()) return false;
         
         Resource resource = (Resource) obj;
-        return Objects.equals(resourceId, resource.resourceId);
+        return resourceId != null ? resourceId.equals(resource.resourceId) : resource.resourceId == null;
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(resourceId);
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("Resource{resourceId='%s', name='%s', category='%s', quantity=%d, location='%s', available=%s}", 
-                           resourceId, name, category, quantity, location, isAvailable);
+        return resourceId != null ? resourceId.hashCode() : 0;
     }
 }

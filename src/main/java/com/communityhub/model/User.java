@@ -19,6 +19,8 @@ public abstract class User {
     private UserRole role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean active = true; // For admin to activate/deactivate users
+    private int failedLoginAttempts = 0; // For account lockout tracking
     
     /**
      * Default constructor for User
@@ -153,6 +155,32 @@ public abstract class User {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
+        updateTimestamp();
+    }
+    
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+    
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+        updateTimestamp();
+    }
+    
+    /**
+     * Resets failed login attempts (used by admin to unlock accounts)
+     */
+    public void resetFailedLoginAttempts() {
+        this.failedLoginAttempts = 0;
+        updateTimestamp();
     }
     
     /**

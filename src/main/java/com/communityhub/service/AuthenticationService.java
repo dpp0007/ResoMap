@@ -21,6 +21,15 @@ import java.util.logging.Level;
 /**
  * Service class for user authentication and session management
  * Demonstrates service layer pattern with security features and collections usage
+ * 
+ * MULTITHREADING IMPLEMENTATION (Review-1 Requirement):
+ * - REASON: Multiple concurrent users may attempt login simultaneously
+ * - SYNCHRONIZATION: login() method is synchronized to prevent race conditions
+ *   when checking/updating login attempts and activeUsers map
+ * - THREAD-SAFE COLLECTIONS: ConcurrentHashMap used for activeUsers, loginAttempts,
+ *   and lastLoginAttempt to handle concurrent access without explicit locking
+ * - CRITICAL SECTION: Account lockout check and login attempt recording must be atomic
+ *   to prevent multiple threads from bypassing lockout protection
  */
 public class AuthenticationService {
     
@@ -30,6 +39,7 @@ public class AuthenticationService {
     private final SessionManager sessionManager;
     
     // Thread-safe collections for session management
+    // ConcurrentHashMap allows multiple threads to read/write without blocking
     private final Map<String, User> activeUsers;
     private final Map<String, Integer> loginAttempts;
     private final Map<String, Long> lastLoginAttempt;

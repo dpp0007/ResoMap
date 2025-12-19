@@ -164,10 +164,8 @@ public final class DataInitializer {
     private static void createResource(ResourceDAO resourceDAO, String name, String category, 
                                      String description, int quantity) {
         try {
-            Resource resource = new Resource(name, category, description);
-            resource.setQuantity(quantity);
-            resource.setLocation("Community Center - Storage");
-            resource.setContactInfo("contact@resomap.com");
+            Resource resource = new Resource(name, description, category, quantity, 
+                "Community Center - Storage", "contact@resomap.com", "admin");
             
             resourceDAO.create(resource);
             logger.info("✓ Created resource: " + name + " (Qty: " + quantity + ")");

@@ -7,8 +7,28 @@ import java.util.regex.Pattern;
 /**
  * Utility class for input validation
  * Provides comprehensive validation methods for user inputs
+ * 
+ * DESIGN DECISION: Centralized validation ensures consistent error messages
+ * across all servlets and prevents validation logic duplication. This improves
+ * maintainability and makes it easier to update validation rules globally.
  */
 public class ValidationUtils {
+    
+    // Centralized validation error messages (constants for consistency)
+    private static final String MSG_REQUIRED = "%s is required";
+    private static final String MSG_INVALID_EMAIL = "Please enter a valid email address";
+    private static final String MSG_INVALID_USERNAME_LENGTH = "Username must be between 3 and 20 characters";
+    private static final String MSG_INVALID_USERNAME_FORMAT = "Username can only contain letters, numbers, underscores, and hyphens";
+    private static final String MSG_PASSWORD_TOO_SHORT = "Password must be at least %d characters long";
+    private static final String MSG_PASSWORD_UPPERCASE = "Password must contain at least one uppercase letter";
+    private static final String MSG_PASSWORD_LOWERCASE = "Password must contain at least one lowercase letter";
+    private static final String MSG_PASSWORD_DIGIT = "Password must contain at least one number";
+    private static final String MSG_PASSWORD_SPECIAL = "Password must contain at least one special character";
+    private static final String MSG_PASSWORD_MISMATCH = "Passwords do not match";
+    private static final String MSG_INVALID_RANGE = "%s must be between %d and %d";
+    private static final String MSG_INVALID_LENGTH = "%s must be between %d and %d characters";
+    private static final String MSG_INVALID_PHONE = "Please enter a valid phone number (10-15 digits)";
+    private static final String MSG_INVALID_RATING = "Rating must be between 1 and 5";
     
     // Email validation pattern
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
@@ -33,11 +53,13 @@ public class ValidationUtils {
     
     /**
      * Validates that a string is not null or empty
+     * WHY: Defensive null checks prevent NullPointerException in downstream code
      * @param value The value to validate
      * @param fieldName The name of the field being validated
      * @throws InvalidInputException if value is null or empty
      */
     public static void validateRequired(String value, String fieldName) throws InvalidInputException {
+        // Defensive null check: value could be null from request parameter
         if (value == null || value.trim().isEmpty()) {
             throw InvalidInputException.requiredField(fieldName);
         }
@@ -45,34 +67,40 @@ public class ValidationUtils {
     
     /**
      * Validates email format
+     * WHY: Email validation prevents invalid data from entering the system
      * @param email The email address to validate
      * @throws InvalidInputException if email format is invalid
      */
     public static void validateEmail(String email) throws InvalidInputException {
         validateRequired(email, "email");
         
-        if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
+        // Normalize: trim whitespace before validation
+        String normalizedEmail = email.trim().toLowerCase();
+        
+        if (!EMAIL_PATTERN.matcher(normalizedEmail).matches()) {
             throw InvalidInputException.invalidEmail(email);
         }
     }
     
     /**
      * Validates username format and requirements
+     * WHY: Username validation ensures consistent user identification and prevents injection attacks
      * @param username The username to validate
      * @throws InvalidInputException if username is invalid
      */
     public static void validateUsername(String username) throws InvalidInputException {
         validateRequired(username, "username");
         
-        String trimmed = username.trim();
+        // Normalize: trim and convert to lowercase for consistency
+        String normalized = username.trim().toLowerCase();
         
-        if (!USERNAME_PATTERN.matcher(trimmed).matches()) {
-            if (trimmed.length() < 3) {
-                throw InvalidInputException.invalidUsername(username, "must be at least 3 characters long");
-            } else if (trimmed.length() > 20) {
-                throw InvalidInputException.invalidUsername(username, "must be no more than 20 characters long");
+        if (!USERNAME_PATTERN.matcher(normalized).matches()) {
+            if (normalized.length() < 3) {
+                throw InvalidInputException.invalidUsername(username, MSG_INVALID_USERNAME_LENGTH);
+            } else if (normalized.length() > 20) {
+                throw InvalidInputException.invalidUsername(username, MSG_INVALID_USERNAME_LENGTH);
             } else {
-                throw InvalidInputException.invalidUsername(username, "can only contain letters, numbers, underscores, and hyphens");
+                throw InvalidInputException.invalidUsername(username, MSG_INVALID_USERNAME_FORMAT);
             }
         }
     }
@@ -189,19 +217,25 @@ public class ValidationUtils {
     
     /**
      * Sanitizes input string by trimming and removing potentially harmful characters
+     * WHY: XSS prevention - escapes HTML characters to prevent script injection
      * @param input The input string to sanitize
-     * @return Sanitized string
+     * @return Sanitized string (null-safe)
      */
     public static String sanitizeInput(String input) {
+        // Defensive null check: input could be null from request
         if (input == null) {
-            return null;
+            return "";  // Return empty string instead of null for safer downstream handling
         }
         
-        return input.trim()
-                   .replaceAll("<", "&lt;")
-                   .replaceAll(">", "&gt;")
-                   .replaceAll("\"", "&quot;")
-                   .replaceAll("'", "&#x27;")
-                   .replaceAll("&", "&amp;");
+        // Normalize: trim whitespace first
+        String trimmed = input.trim();
+        
+        // Escape HTML characters to prevent XSS attacks
+        // Order matters: escape & first to avoid double-escaping
+        return trimmed.replaceAll("&", "&amp;")
+                      .replaceAll("<", "&lt;")
+                      .replaceAll(">", "&gt;")
+                      .replaceAll("\"", "&quot;")
+                      .replaceAll("'", "&#x27;");
     }
 }

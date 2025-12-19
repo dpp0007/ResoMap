@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * Data Access Object for Resource entities
- * Demonstrates concrete DAO implementation with resource-specific operations
  */
 public class ResourceDAO extends BaseDAO<Resource> {
     
@@ -90,10 +89,6 @@ public class ResourceDAO extends BaseDAO<Resource> {
     public void create(Resource resource) throws DatabaseException {
         validateEntity(resource, "create");
         
-        if (!resource.isValid()) {
-            throw new DatabaseException("Cannot create resource with invalid data");
-        }
-        
         executeInTransaction(() -> {
             PreparedStatement stmt = null;
             try {
@@ -143,10 +138,6 @@ public class ResourceDAO extends BaseDAO<Resource> {
     public void update(Resource resource) throws DatabaseException {
         validateEntity(resource, "update");
         validateId(resource.getResourceId(), "update");
-        
-        if (!resource.isValid()) {
-            throw new DatabaseException("Cannot update resource with invalid data");
-        }
         
         executeInTransaction(() -> {
             PreparedStatement stmt = null;
@@ -283,145 +274,4 @@ public class ResourceDAO extends BaseDAO<Resource> {
             closeResources(rs, stmt);
         }
     }
-    
-    /**
-     * Finds resources by category
-     * @param category Category to search for
-     * @return List of resources in the specified category
-     * @throws DatabaseException if search fails
-     */
-    public List<Resource> findByCategory(String category) throws DatabaseException {
-        if (category == null || category.trim().isEmpty()) {
-            throw new DatabaseException("Category cannot be null or empty");
-        }
-        
-        return findByField("category", category);
-    }
-    
-    /**
-     * Finds available resources (quantity > 0)
-     * @return List of available resources
-     * @throws DatabaseException if search fails
-     */
-    public List<Resource> findAvailable() throws DatabaseException {
-        List<Resource> resources = new ArrayList<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            String sql = "SELECT * FROM " + getTableName() + " WHERE quantity > 0";
-            stmt = connection.prepareStatement(sql);
-            rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                resources.add(mapResultSetToEntity(rs));
-            }
-            
-            return resources;
-            
-        } catch (SQLException e) {
-            throw new DatabaseException("Failed to find available resources", "find available resources", e);
-        } finally {
-            closeResources(rs, stmt);
-        }
-    }
-    
-    /**
-     * Searches resources by name or description
-     * @param searchTerm Search term to look for
-     * @return List of matching resources
-     * @throws DatabaseException if search fails
-     */
-    public List<Resource> searchByNameOrDescription(String searchTerm) throws DatabaseException {
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return findAll();
-        }
-        
-        List<Resource> resources = new ArrayList<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            String sql = "SELECT * FROM " + getTableName() + 
-                        " WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ?";
-            stmt = connection.prepareStatement(sql);
-            String searchPattern = "%" + searchTerm.toLowerCase() + "%";
-            stmt.setString(1, searchPattern);
-            stmt.setString(2, searchPattern);
-            rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                resources.add(mapResultSetToEntity(rs));
-            }
-            
-            return resources;
-            
-        } catch (SQLException e) {
-            throw new DatabaseException("Failed to search resources", "search resources", e);
-        } finally {
-            closeResources(rs, stmt);
-        }
-    }
-    
-    /**
-     * Gets all unique categories
-     * @return List of unique categories
-     * @throws DatabaseException if retrieval fails
-     */
-    public List<String> getAllCategories() throws DatabaseException {
-        List<String> categories = new ArrayList<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            String sql = "SELECT DISTINCT category FROM " + getTableName() + " ORDER BY category";
-            stmt = connection.prepareStatement(sql);
-            rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                categories.add(rs.getString("category"));
-            }
-            
-            return categories;
-            
-        } catch (SQLException e) {
-            throw new DatabaseException("Failed to get categories", "get categories", e);
-        } finally {
-            closeResources(rs, stmt);
-        }
-    }
-    
-    /**
-     * Updates resource quantity
-     * @param resourceId ID of the resource
-     * @param newQuantity New quantity value
-     * @throws DatabaseException if update fails
-     */
-    public void updateQuantity(String resourceId, int newQuantity) throws DatabaseException {
-        validateId(resourceId, "update quantity");
-        
-        executeInTransaction(() -> {
-            PreparedStatement stmt = null;
-            try {
-                String sql = "UPDATE " + getTableName() + " SET quantity = ?, updated_at = ? WHERE resource_id = ?";
-                stmt = connection.prepareStatement(sql);
-                stmt.setInt(1, Math.max(0, newQuantity));
-                stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-                stmt.setString(3, resourceId);
-                
-                int rowsAffected = stmt.executeUpdate();
-                if (rowsAffected == 0) {
-                    throw new SQLException("Resource not found for quantity update: " + resourceId);
-                }
-                
-                logger.info("Resource quantity updated: " + resourceId + " -> " + newQuantity);
-                
-            } catch (SQLException e) {
-                throw new DatabaseException("Failed to update resource quantity", "update quantity", e);
-            } finally {
-                closeStatement(stmt);
-            }
-        });
-    }
-    
 }

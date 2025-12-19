@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * Data Access Object for Request entities
- * Demonstrates concrete DAO implementation with request-specific operations
  */
 public class RequestDAO extends BaseDAO<Request> {
     
@@ -75,24 +74,25 @@ public class RequestDAO extends BaseDAO<Request> {
         String requestId = rs.getString("request_id");
         String requesterId = rs.getString("requester_id");
         String resourceId = rs.getString("resource_id");
-        String volunteerId = rs.getString("volunteer_id");
-        RequestStatus status = RequestStatus.fromString(rs.getString("status"));
+        String volunteerId = rs.getString("volunteer_id"); // Can be null for unassigned requests
+        RequestStatus status = RequestStatus.valueOf(rs.getString("status"));
         String description = rs.getString("description");
-        UrgencyLevel urgencyLevel = UrgencyLevel.fromString(rs.getString("urgency_level"));
-        LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-        LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
+        UrgencyLevel urgencyLevel = UrgencyLevel.valueOf(rs.getString("urgency_level"));
         
-        return new Request(requestId, requesterId, resourceId, volunteerId, status, 
-                         description, urgencyLevel, createdAt, updatedAt);
+        // Handle null timestamps safely
+        Timestamp createdTimestamp = rs.getTimestamp("created_at");
+        LocalDateTime createdAt = (createdTimestamp != null) ? createdTimestamp.toLocalDateTime() : LocalDateTime.now();
+        
+        Timestamp updatedTimestamp = rs.getTimestamp("updated_at");
+        LocalDateTime updatedAt = (updatedTimestamp != null) ? updatedTimestamp.toLocalDateTime() : LocalDateTime.now();
+        
+        return new Request(requestId, requesterId, resourceId, volunteerId, 
+                         status, description, urgencyLevel, createdAt, updatedAt);
     }
     
     @Override
     public void create(Request request) throws DatabaseException {
         validateEntity(request, "create");
-        
-        if (!request.isValid()) {
-            throw new DatabaseException("Cannot create request with invalid data");
-        }
         
         executeInTransaction(() -> {
             PreparedStatement stmt = null;
@@ -143,10 +143,6 @@ public class RequestDAO extends BaseDAO<Request> {
     public void update(Request request) throws DatabaseException {
         validateEntity(request, "update");
         validateId(request.getRequestId(), "update");
-        
-        if (!request.isValid()) {
-            throw new DatabaseException("Cannot update request with invalid data");
-        }
         
         executeInTransaction(() -> {
             PreparedStatement stmt = null;
@@ -283,211 +279,4 @@ public class RequestDAO extends BaseDAO<Request> {
             closeResources(rs, stmt);
         }
     }
-    
-    /**
-     * Finds requests by requester ID
-     * @param requesterId ID of the requester
-     * @return List of requests by the requester
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findByRequesterId(String requesterId) throws DatabaseException {
-        if (requesterId == null || requesterId.trim().isEmpty()) {
-            throw new DatabaseException("Requester ID cannot be null or empty");
-        }
-        
-        return findByField("requester_id", requesterId);
-    }
-    
-    /**
-     * Finds requests by volunteer ID
-     * @param volunteerId ID of the volunteer
-     * @return List of requests assigned to the volunteer
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findByVolunteerId(String volunteerId) throws DatabaseException {
-        if (volunteerId == null || volunteerId.trim().isEmpty()) {
-            throw new DatabaseException("Volunteer ID cannot be null or empty");
-        }
-        
-        return findByField("volunteer_id", volunteerId);
-    }
-    
-    /**
-     * Finds requests by status
-     * @param status Request status
-     * @return List of requests with the specified status
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findByStatus(RequestStatus status) throws DatabaseException {
-        if (status == null) {
-            throw new DatabaseException("Status cannot be null");
-        }
-        
-        return findByField("status", status.toString());
-    }
-    
-    /**
-     * Finds pending requests (not assigned to any volunteer)
-     * @return List of pending requests
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findPendingRequests() throws DatabaseException {
-        return findByStatus(RequestStatus.PENDING);
-    }
-    
-    /**
-     * Finds requests by urgency level
-     * @param urgencyLevel Urgency level
-     * @return List of requests with the specified urgency level
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findByUrgencyLevel(UrgencyLevel urgencyLevel) throws DatabaseException {
-        if (urgencyLevel == null) {
-            throw new DatabaseException("Urgency level cannot be null");
-        }
-        
-        return findByField("urgency_level", urgencyLevel.toString());
-    }
-    
-    /**
-     * Finds critical requests that need immediate attention
-     * @return List of critical requests
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findCriticalRequests() throws DatabaseException {
-        List<Request> criticalRequests = new ArrayList<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            String sql = "SELECT * FROM " + getTableName() + 
-                        " WHERE urgency_level = ? AND status IN (?, ?, ?) ORDER BY created_at ASC";
-            stmt = connection.prepareStatement(sql);
-            stmt.setString(1, UrgencyLevel.CRITICAL.toString());
-            stmt.setString(2, RequestStatus.PENDING.toString());
-            stmt.setString(3, RequestStatus.ASSIGNED.toString());
-            stmt.setString(4, RequestStatus.IN_PROGRESS.toString());
-            rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                criticalRequests.add(mapResultSetToEntity(rs));
-            }
-            
-            return criticalRequests;
-            
-        } catch (SQLException e) {
-            throw new DatabaseException("Failed to find critical requests", "find critical requests", e);
-        } finally {
-            closeResources(rs, stmt);
-        }
-    }
-    
-    /**
-     * Finds overdue requests (older than specified hours and still active)
-     * @param hours Number of hours to consider overdue
-     * @return List of overdue requests
-     * @throws DatabaseException if search fails
-     */
-    public List<Request> findOverdueRequests(int hours) throws DatabaseException {
-        List<Request> overdueRequests = new ArrayList<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            LocalDateTime cutoffTime = LocalDateTime.now().minusHours(hours);
-            String sql = "SELECT * FROM " + getTableName() + 
-                        " WHERE created_at < ? AND status IN (?, ?, ?) ORDER BY created_at ASC";
-            stmt = connection.prepareStatement(sql);
-            stmt.setTimestamp(1, Timestamp.valueOf(cutoffTime));
-            stmt.setString(2, RequestStatus.PENDING.toString());
-            stmt.setString(3, RequestStatus.ASSIGNED.toString());
-            stmt.setString(4, RequestStatus.IN_PROGRESS.toString());
-            rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                overdueRequests.add(mapResultSetToEntity(rs));
-            }
-            
-            return overdueRequests;
-            
-        } catch (SQLException e) {
-            throw new DatabaseException("Failed to find overdue requests", "find overdue requests", e);
-        } finally {
-            closeResources(rs, stmt);
-        }
-    }
-    
-    /**
-     * Assigns a volunteer to a request
-     * @param requestId ID of the request
-     * @param volunteerId ID of the volunteer
-     * @throws DatabaseException if assignment fails
-     */
-    public void assignVolunteer(String requestId, String volunteerId) throws DatabaseException {
-        validateId(requestId, "assign volunteer");
-        validateId(volunteerId, "assign volunteer");
-        
-        executeInTransaction(() -> {
-            PreparedStatement stmt = null;
-            try {
-                String sql = "UPDATE " + getTableName() + 
-                           " SET volunteer_id = ?, status = ?, updated_at = ? WHERE request_id = ? AND status = ?";
-                stmt = connection.prepareStatement(sql);
-                stmt.setString(1, volunteerId);
-                stmt.setString(2, RequestStatus.ASSIGNED.toString());
-                stmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-                stmt.setString(4, requestId);
-                stmt.setString(5, RequestStatus.PENDING.toString());
-                
-                int rowsAffected = stmt.executeUpdate();
-                if (rowsAffected == 0) {
-                    throw new SQLException("Request not found or not in pending status: " + requestId);
-                }
-                
-                logger.info("Volunteer assigned to request: " + requestId + " -> " + volunteerId);
-                
-            } catch (SQLException e) {
-                throw new DatabaseException("Failed to assign volunteer", "assign volunteer", e);
-            } finally {
-                closeStatement(stmt);
-            }
-        });
-    }
-    
-    /**
-     * Updates request status
-     * @param requestId ID of the request
-     * @param newStatus New status
-     * @throws DatabaseException if update fails
-     */
-    public void updateStatus(String requestId, RequestStatus newStatus) throws DatabaseException {
-        validateId(requestId, "update status");
-        if (newStatus == null) {
-            throw new DatabaseException("Status cannot be null");
-        }
-        
-        executeInTransaction(() -> {
-            PreparedStatement stmt = null;
-            try {
-                String sql = "UPDATE " + getTableName() + " SET status = ?, updated_at = ? WHERE request_id = ?";
-                stmt = connection.prepareStatement(sql);
-                stmt.setString(1, newStatus.toString());
-                stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-                stmt.setString(3, requestId);
-                
-                int rowsAffected = stmt.executeUpdate();
-                if (rowsAffected == 0) {
-                    throw new SQLException("Request not found for status update: " + requestId);
-                }
-                
-                logger.info("Request status updated: " + requestId + " -> " + newStatus);
-                
-            } catch (SQLException e) {
-                throw new DatabaseException("Failed to update request status", "update status", e);
-            } finally {
-                closeStatement(stmt);
-            }
-        });
-    }
-    
 }
